@@ -101,7 +101,9 @@ export default function SwipeList(props: SwipeListProps) {
 
     const transformDataForPresentation = (data: WeightAndReps[]) => {
       const currentSets = (data as WeightAndReps[]) ?? []
-      return currentSets.map((set, i) => ConversionUtil.toPresent(set.weight, set.reps, i));
+      console.log(currentSets)
+      return currentSets.filter(Boolean)
+      .map((set, i) => ConversionUtil.toPresent(set.weight, set.reps, i));
     };
 
     return (

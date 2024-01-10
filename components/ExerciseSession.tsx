@@ -1,8 +1,8 @@
 
 import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
-import ExerciseModal from './ExerciseModal';
-import Expandable2 from './Expandable2';
+import ExerciseScreen from './ExerciseScreen';
+import ExpandableList from './ExpandableList';
 
 type ExerciseSessionProps = {
   selectedDate: string
@@ -19,19 +19,13 @@ export default function ExerciseSession(props: ExerciseSessionProps) {
           <Image style={styles.calendarIcon} source={require('../assets/icons/add.svg')} />
         </TouchableOpacity>
       </View>
-      {Expandable2('Back',[
-        {'name': 'Deadlift', 'subtitle': 'Super Lift'}, 
-        {'name': 'Pull-Up', 'subtitle': 'Good lift too'}
-      ])}
-      {Expandable2('Legs',[
-        {'name': 'Squat', 'subtitle': 'Super Lift'},
-        {'name': 'Romanian deadlift', 'subtitle': 'Good lift too'}
-      ])}
-      {Expandable2('Shoulders',[
-        {'name': 'Squat', 'subtitle': 'Super Lift'},
-        {'name': 'Romanian deadlift', 'subtitle': 'Good lift too'}
-        ])}
-      <ExerciseModal date={props.selectedDate} exerciseName='Deadlift' />
+      <ExpandableList 
+        date={props.selectedDate} 
+        categoryName='Back'
+        listOfExercises={['Deadlift', 'Pull-up']}
+      ></ExpandableList>
+      {/* {ExpandableList('Back',c)} */}
+      {/* <ExerciseModal date={props.selectedDate} exerciseName='Deadlift' /> */}
     </View>
   );
 };

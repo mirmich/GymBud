@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, View, Image, Modal, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, View, Modal, StyleSheet, Pressable } from 'react-native';
 
 import FloatStepInput from './FloatStepInput';
 import SwipeList from './SwipeList';
@@ -8,15 +8,24 @@ import SetsStorageService from '../services/storage/SetsStorageService';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import StorageService from '../services/storage/StorageService';
 import { Selected } from '../model/Storage';
+import { AntDesign } from '@expo/vector-icons';
+import { RouteProp } from '@react-navigation/native';
 
-type ExerciseModalProps = {
-  date: string,
-  exerciseName: string
-}
+import { RootStackParamList } from '../App';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-export default function ExerciseModal(props: ExerciseModalProps) {
-  const [modalVisible, setModalVisible] = useState(false);
-  const key = props.date.concat(props.exerciseName);
+type ExerciseScreenRouteProp = RouteProp<RootStackParamList, 'Exercise'>;
+type ExerciseScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Exercise'>;
+
+type ExerciseScreenProps = {
+  route: ExerciseScreenRouteProp;
+  navigation: ExerciseScreenNavigationProp;
+};
+
+
+export default function ExerciseScreen({ route, navigation }: ExerciseScreenProps) {
+  const { date, exerciseName } = route.params;
+  const key = date.concat(exerciseName);
   const [filter, setFilter] = React.useState(true);
   const { data }: {data: WeightAndReps[]} = SetsStorageService.getSets(key);
 
@@ -89,57 +98,56 @@ export default function ExerciseModal(props: ExerciseModalProps) {
   });
 
   const handleWeight = async (newValue: number) => {
-    const unit0 = {weight: newValue, reps: selected.unit.reps} as WeightAndReps;
+    const unit0: WeightAndReps = {
+      weight: newValue, 
+      reps: (selected?.unit?.reps) ?? 0.0
+    };
     const neco: Selected = {
-      index: selected.index, 
+      index: selected?.index ?? 0.0, 
       unit: unit0, 
-      operation: selected.operation
+      operation: selected?.operation ?? 'add'
     };
     await selectedSetMutation.mutateAsync(neco);
   };
 
   const handleReps = async (newValue: number) => {
-    const unit0 = {weight: selected.unit.weight, reps: newValue} as WeightAndReps;
+    const unit0: WeightAndReps = {
+      weight: (selected?.unit?.weight) ?? 0.0, 
+      reps: newValue
+    };
     const neco: Selected = {
-      index: selected.index, 
+      index: selected?.index ?? 0.0, 
       unit: unit0, 
-      operation: selected.operation
+      operation: selected?.operation ?? 'add'
     };
     await selectedSetMutation.mutateAsync(neco);
   };
 
   return (
     <View style={styles.centeredView}>
-      <Modal
+      {/* <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
           setModalVisible(!modalVisible);
-        }}>
+        }}> */}
         <View style={styles.centeredView}>
           <View style={styles.header}>
-            <TouchableOpacity 
-              style={styles.backButton} 
-              onPress={() => setModalVisible(!modalVisible)} 
-              activeOpacity={0.5}>
-              <Image style={styles.calendarIcon} 
-                    source={require('../assets/icons/arrow_back.svg')} />
-          </TouchableOpacity>
-          <Text style={styles.modalText}>Deadlift</Text>   
+            <Text style={styles.modalText}>{exerciseName}</Text>   
           </View>
           <FloatStepInput 
             text='Weight' 
             step={2.5} 
-            value={selected.unit.weight} 
+            value={selected?.unit?.weight ?? 0.0} 
             onChangeValue={handleWeight}/>
           <FloatStepInput 
             text='Reps'
             step={1}
-            value={selected.unit.reps}
+            value={selected?.unit?.reps ?? 0.0}
             onChangeValue={handleReps}/>
           {(selected != null && selected.operation === 'modify') ?
-          <TouchableOpacity 
+          <Pressable 
             style={styles.buttonUpdate} 
             onPress={() => updateSetMutation.mutateAsync({
               weight: selected.unit.weight,
@@ -147,8 +155,8 @@ export default function ExerciseModal(props: ExerciseModalProps) {
               index: (selected.index)
             })}>
             <Text style={styles.addUpdateText}>Update</Text>
-          </TouchableOpacity> : 
-          <TouchableOpacity
+          </Pressable> : 
+          <Pressable
           style={styles.buttonAdd} 
           onPress={async () => {
             await addSetMutation.mutateAsync({
@@ -157,16 +165,16 @@ export default function ExerciseModal(props: ExerciseModalProps) {
           });
           }}>
             <Text style={styles.addUpdateText}>Add</Text>
-          </TouchableOpacity>
+          </Pressable>
           }
           <SwipeList key0={key}/>
         </View>
-      </Modal>
-      <TouchableOpacity
+      {/* </Modal> */}
+      {/* <Pressable
         style={[styles.button, styles.buttonOpen]}
         onPress={() => setModalVisible(true)}>
         <Text style={styles.textStyle}>Show Modal</Text>
-      </TouchableOpacity>
+      </Pressable> */}
     </View>
   );
 };
