@@ -9,7 +9,7 @@ import { useState } from "react";
 
 
 
-export default function Home() {
+export default function Home({ navigation }) {
     const [selected, setSelected] = useState(format(new Date(),'yyyy-MM-dd'));
     const [showCalendar, setShowCalendar] = useState(true);
     const calendarPress = () => {
@@ -21,10 +21,10 @@ export default function Home() {
             <Header />
             <TopBar selectedDay={selected} onCalendarPressed={calendarPress}/>
                 { showCalendar && <Calendar
-                    onDayPress={day => {
-                    setSelected(day.dateString);
-                    console.log(selected);
-                }}
+                    onDayPress={ day => {
+                        setSelected(day.dateString);
+                        console.log(selected);
+                    }}
                 markedDates={{
                 [selected]: {selected: true, disableTouchEvent: true, selectedColor: 'orange'}
                 }}

@@ -9,15 +9,23 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import StorageService from '../services/storage/StorageService';
 import { Selected } from '../model/Storage';
 import { AntDesign } from '@expo/vector-icons';
+import { RouteProp } from '@react-navigation/native';
 
-type ExerciseModalProps = {
-  date: string,
-  exerciseName: string
-}
+import { RootStackParamList } from '../App';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-export default function ExerciseModal(props: ExerciseModalProps) {
-  const [modalVisible, setModalVisible] = useState(false);
-  const key = props.date.concat(props.exerciseName);
+type ExerciseScreenRouteProp = RouteProp<RootStackParamList, 'Exercise'>;
+type ExerciseScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Exercise'>;
+
+type ExerciseScreenProps = {
+  route: ExerciseScreenRouteProp;
+  navigation: ExerciseScreenNavigationProp;
+};
+
+
+export default function ExerciseScreen({ route, navigation }: ExerciseScreenProps) {
+  const { date, exerciseName } = route.params;
+  const key = date.concat(exerciseName);
   const [filter, setFilter] = React.useState(true);
   const { data }: {data: WeightAndReps[]} = SetsStorageService.getSets(key);
 
@@ -126,12 +134,7 @@ export default function ExerciseModal(props: ExerciseModalProps) {
         }}> */}
         <View style={styles.centeredView}>
           <View style={styles.header}>
-            <Pressable 
-              style={styles.backButton} 
-              onPress={() => setModalVisible(!modalVisible)}>
-              <AntDesign name="arrowleft" size={24} color="black" />
-            </Pressable>
-            <Text style={styles.modalText}>{props.exerciseName}</Text>   
+            <Text style={styles.modalText}>{exerciseName}</Text>   
           </View>
           <FloatStepInput 
             text='Weight' 

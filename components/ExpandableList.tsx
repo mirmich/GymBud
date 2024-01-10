@@ -3,23 +3,38 @@ import { View, StyleSheet } from 'react-native';
 import { ListItem } from '@rneui/themed';
 import React from 'react';
 import { AntDesign } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
-const Expandable2 = (categoryName, listOfExercises) => {
-  const log = () => {
+type ExpandableListProps = {
+  date: string,
+  categoryName: string,
+  listOfExercises: string[]
+}
+
+export default function ExpandableList(props: ExpandableListProps) {
+  const navigation = useNavigation();
+  const [expanded, setExpanded] = useState(false);
+  const log = (date0: string, name: string) => {
     console.log('pressed');
+    console.log(date0);
+    console.log(name);
+    navigation.navigate('Exercise', {
+      date: date0,
+      exerciseName: name
+    });
   };
 
   const openModal = () => {
 
   }
-  const [expanded, setExpanded] = useState(false);
+  
   return (
     <View>
     <ListItem.Accordion
       content={
         <>
           <ListItem.Content>
-            <ListItem.Title>{categoryName}</ListItem.Title>
+            <ListItem.Title>{props.categoryName}</ListItem.Title>
           </ListItem.Content>
         </>
       }
@@ -28,11 +43,10 @@ const Expandable2 = (categoryName, listOfExercises) => {
         setExpanded(!expanded);
       }}
     >
-      {listOfExercises.map((l, i) => (
-        <ListItem key={i} onPress={log} bottomDivider>
+      {props.listOfExercises.map((name, i) => (
+        <ListItem key={i} onPress={() => log(props.date, name)} bottomDivider>
           <ListItem.Content style={styles.listContent}>
-            <ListItem.Title>{l.name}</ListItem.Title>
-            <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
+            <ListItem.Title>{name}</ListItem.Title>
             <AntDesign name="right" size={24} color="black" />
           </ListItem.Content>
           <ListItem.Chevron />
@@ -53,5 +67,3 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
   }});
-
-export default Expandable2;
