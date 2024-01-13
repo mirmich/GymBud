@@ -8,7 +8,7 @@ class UnitConversionUtil {
           units: 'kg',
           amount: kilos,
           reps: reps0,
-          text: `${index+1}    ${kilos} kgs    ${reps0} reps`
+          text: `${index+1}    ${kilos} kg    ${reps0} reps`
         } as UnitOfExercise;
     }
 

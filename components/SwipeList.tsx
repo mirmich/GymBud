@@ -1,9 +1,10 @@
 import {
   Animated,
   Dimensions,
+  Pressable,
   StyleSheet,
   Text,
-  TouchableHighlight,
+  Image,
   View,
 } from 'react-native';
 import React, { useState } from 'react';
@@ -16,10 +17,19 @@ import { Selected } from '../model/Storage';
 import SetsStorageService from '../services/storage/SetsStorageService';
 import { WeightAndReps } from '../model/Category';
 import { darkMode } from '../model/GlobalStyles';
+import { SimpleLineIcons } from '@expo/vector-icons';
 
 type SwipeListProps = {
   key0: string
 }
+
+const { width } = Dimensions.get('window');
+const gap = 10;
+const itemPerRow = 6;
+const totalGapSize = (itemPerRow - 1) * gap;
+const windowWidth = width;
+const childWidth = (windowWidth - totalGapSize) / itemPerRow;
+
 
 export default function SwipeList(props: SwipeListProps) {
   const [animationIsRunning, setAnimationIsRunning] = useState(false);
@@ -62,15 +72,20 @@ export default function SwipeList(props: SwipeListProps) {
           },
         ]}
       >
-        <TouchableHighlight
-        key={index}
-        onPress={()=> selectedSetMutation.mutateAsync(
-          {index: index, unit: {weight: item.amount, reps: item.reps}, operation: 'modify'} as Selected
+        <Pressable
+          key={index}
+          onPress={()=> selectedSetMutation.mutateAsync(
+            {index: index, unit: {weight: item.amount, reps: item.reps}, operation: 'modify'} as Selected
           )}
-        style={false ? styles.selected : styles.rowFront}
-        underlayColor={'#AAA'}>
-        <Text style={styles.listText}>{item.text}</Text>
-      </TouchableHighlight>
+          style={false ? styles.selected : styles.rowFront}>
+          <SimpleLineIcons 
+            style={styles.trophy} 
+            name="trophy" 
+            size={24} 
+            color={darkMode.fontColor}/>
+          <Text style={styles.listText}>{item.text}</Text>
+          
+        </Pressable>
       </Animated.View>
     )};
 
@@ -144,11 +159,15 @@ const styles = StyleSheet.create({
     color: '#FFF',
   },
   rowFront: {
+    display: 'flex',
+    flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: darkMode.background,
     borderBottomColor: darkMode.border,
     borderBottomWidth: 1,
-    justifyContent: 'center',
+    paddingLeft: 16,
+    paddingRight: 16,
+    justifyContent: 'flex-start',
     height: 50,
   },
   rowBack: {
@@ -172,6 +191,11 @@ const styles = StyleSheet.create({
     right: 0,
   },
   listText: {
-    color: darkMode.fontColor
+    color: darkMode.fontColor,
+    marginLeft: (width) / 2 - 130
+  },
+  trophy: {
+    alignSelf: 'center',
+    zIndex: 50
   }
 });

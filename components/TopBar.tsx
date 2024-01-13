@@ -41,12 +41,11 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: darkMode.accentPurple,
     paddingBottom: 5,
-    paddingTop: 5,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingLeft: 15,
-    paddingRight: 15
+    paddingLeft: 16,
+    paddingRight: 16
   },
   text: {
     fontSize: 16,

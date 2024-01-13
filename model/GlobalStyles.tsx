@@ -23,7 +23,7 @@ export const darkMode: DarkMode = {
     background: "#262626",
     border: "#444444",
     fontColor: "#f2f2f2",
-    accentPurple: "#9b59b6",
+    accentPurple: "#872aad",
     accentGreen: "#2ecc71",
     accentRed: "#e74c3c",
     accentYellow: "#f39c12",
