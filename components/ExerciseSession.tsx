@@ -1,8 +1,8 @@
 
 import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
-import ExerciseScreen from './ExerciseScreen';
 import ExpandableList from './ExpandableList';
+import { darkMode } from '../model/GlobalStyles';
 
 type ExerciseSessionProps = {
   selectedDate: string
@@ -10,8 +10,8 @@ type ExerciseSessionProps = {
 
 export default function ExerciseSession(props: ExerciseSessionProps) {
   return (
-    <View>
-      <View style={styles.container}>
+    <View style={styles.container}>
+      <View style={styles.headingContainer}>
         <View style={styles.day}>
           <Text style={styles.paragraph}>Session</Text>
         </View>
@@ -24,6 +24,16 @@ export default function ExerciseSession(props: ExerciseSessionProps) {
         categoryName='Back'
         listOfExercises={['Deadlift', 'Pull-up']}
       ></ExpandableList>
+      <ExpandableList 
+        date={props.selectedDate} 
+        categoryName='Legs'
+        listOfExercises={['Squat', 'Leg press']}
+      ></ExpandableList>
+      <ExpandableList 
+        date={props.selectedDate} 
+        categoryName='Biceps'
+        listOfExercises={['Barbell curl', 'Ez-bar curl']}
+      ></ExpandableList>
       {/* {ExpandableList('Back',c)} */}
       {/* <ExerciseModal date={props.selectedDate} exerciseName='Deadlift' /> */}
     </View>
@@ -32,9 +42,12 @@ export default function ExerciseSession(props: ExerciseSessionProps) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'grey',
-    paddingBottom: 5,
-    paddingTop: 5,
+    paddingBottom: 15,
+    paddingTop: 15
+  },
+  headingContainer: {
+    backgroundColor: darkMode.background,
+    paddingBottom: 15,
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
@@ -42,11 +55,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: 'white',
+    color: darkMode.fontColor,
   },
   day: {
     flexGrow: 4,
-    marginLeft: 50,
   },
   calendarIcon: {
     marginRight: 5,

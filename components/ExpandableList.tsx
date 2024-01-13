@@ -4,6 +4,7 @@ import { ListItem } from '@rneui/themed';
 import React from 'react';
 import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { globalStyle, darkMode } from '../model/GlobalStyles';
 
 type ExpandableListProps = {
   date: string,
@@ -14,29 +15,22 @@ type ExpandableListProps = {
 export default function ExpandableList(props: ExpandableListProps) {
   const navigation = useNavigation();
   const [expanded, setExpanded] = useState(false);
-  const log = (date0: string, name: string) => {
-    console.log('pressed');
-    console.log(date0);
-    console.log(name);
+  const navigateToExercise = (date0: string, name: string) => {
     navigation.navigate('Exercise', {
       date: date0,
       exerciseName: name
     });
   };
-
-  const openModal = () => {
-
-  }
   
   return (
     <View>
-    <ListItem.Accordion
+    <ListItem.Accordion 
+      containerStyle={styles.listContainer}
       content={
-        <>
-          <ListItem.Content>
-            <ListItem.Title>{props.categoryName}</ListItem.Title>
+          <ListItem.Content style={styles.topListContentContainer}>
+            <ListItem.Title style={styles.item}>{props.categoryName}</ListItem.Title>
+            <AntDesign style={styles.item} name="down" size={24} color={darkMode.fontColor} />
           </ListItem.Content>
-        </>
       }
       isExpanded={expanded}
       onPress={() => {
@@ -44,26 +38,56 @@ export default function ExpandableList(props: ExpandableListProps) {
       }}
     >
       {props.listOfExercises.map((name, i) => (
-        <ListItem key={i} onPress={() => log(props.date, name)} bottomDivider>
-          <ListItem.Content style={styles.listContent}>
-            <ListItem.Title>{name}</ListItem.Title>
-            <AntDesign name="right" size={24} color="black" />
+        <ListItem 
+          containerStyle={styles.listContainer} 
+          key={i} 
+          onPress={() => navigateToExercise(props.date, name)} 
+          bottomDivider>
+          <ListItem.Content style={styles.topListContentContainer}>
+            <ListItem.Title style={styles.bottomItem}>{name}</ListItem.Title>
+            <AntDesign name="right" size={24} color={darkMode.fontColor} />
           </ListItem.Content>
           <ListItem.Chevron />
         </ListItem>
       ))}
     </ListItem.Accordion>
     </View>
-    
     );
     
 };
+const item = {
+  color: darkMode.fontColor,
+  fontFamily: globalStyle.fontFamilyRegular,
+  flexGrow: 0,
+  flexShrink: 0,
+  flexBasis: 'auto'
+};
 
 const styles = StyleSheet.create({
-  listContent: {
-    width: '100%',
-    height: '100%',
+  listContainer: {
+    backgroundColor: darkMode.background,
+  },
+  topListContentContainer: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-around',
-  }});
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingLeft: 10,
+    paddingRight: 10
+  },
+  item: {
+    color: darkMode.fontColor,
+    fontFamily: globalStyle.fontFamilyRegular,
+    flexGrow: 0,
+    flexShrink: 0,
+    flexBasis: 'auto'
+  },
+  bottomItem: {
+    color: darkMode.fontColor,
+    fontFamily: globalStyle.fontFamilyRegular,
+    flexGrow: 0,
+    flexShrink: 0,
+    flexBasis: 'auto',
+    marginLeft: 10
+  }
+});

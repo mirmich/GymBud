@@ -15,6 +15,7 @@ import StorageService from '../services/storage/StorageService';
 import { Selected } from '../model/Storage';
 import SetsStorageService from '../services/storage/SetsStorageService';
 import { WeightAndReps } from '../model/Category';
+import { darkMode } from '../model/GlobalStyles';
 
 type SwipeListProps = {
   key0: string
@@ -68,7 +69,7 @@ export default function SwipeList(props: SwipeListProps) {
           )}
         style={false ? styles.selected : styles.rowFront}
         underlayColor={'#AAA'}>
-        <Text>{item.text}</Text>
+        <Text style={styles.listText}>{item.text}</Text>
       </TouchableHighlight>
       </Animated.View>
     )};
@@ -128,13 +129,13 @@ const styles = StyleSheet.create({
   selected: {
     alignItems: 'center',
     backgroundColor: '#AAA',
-    borderBottomColor: 'black',
+    borderBottomColor: darkMode.border,
     borderBottomWidth: 1,
     justifyContent: 'center',
     height: 50,
   },
   container: {
-    backgroundColor: 'white',
+    backgroundColor: darkMode.background,
     flex: 1,
     width: '90%'
   },
@@ -144,8 +145,8 @@ const styles = StyleSheet.create({
   },
   rowFront: {
     alignItems: 'center',
-    backgroundColor: 'white',
-    borderBottomColor: 'black',
+    backgroundColor: darkMode.background,
+    borderBottomColor: darkMode.border,
     borderBottomWidth: 1,
     justifyContent: 'center',
     height: 50,
@@ -170,4 +171,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
     right: 0,
   },
+  listText: {
+    color: darkMode.fontColor
+  }
 });
