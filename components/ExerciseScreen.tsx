@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { Text, View, Modal, StyleSheet, Pressable } from 'react-native';
-
+import React from 'react';
+import { Text, View, StyleSheet, Pressable } from 'react-native';
 import FloatStepInput from './FloatStepInput';
 import SwipeList from './SwipeList';
 import { WeightAndReps } from '../model/Category';
@@ -8,11 +7,10 @@ import SetsStorageService from '../services/storage/SetsStorageService';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import StorageService from '../services/storage/StorageService';
 import { Selected } from '../model/Storage';
-import { AntDesign } from '@expo/vector-icons';
 import { RouteProp } from '@react-navigation/native';
-
 import { RootStackParamList } from '../App';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { darkMode, globalStyle } from '../model/GlobalStyles';
 
 type ExerciseScreenRouteProp = RouteProp<RootStackParamList, 'Exercise'>;
 type ExerciseScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Exercise'>;
@@ -26,7 +24,6 @@ type ExerciseScreenProps = {
 export default function ExerciseScreen({ route, navigation }: ExerciseScreenProps) {
   const { date, exerciseName } = route.params;
   const key = date.concat(exerciseName);
-  const [filter, setFilter] = React.useState(true);
   const { data }: {data: WeightAndReps[]} = SetsStorageService.getSets(key);
 
   const { data: selected }: {data: Selected}  = useQuery({
@@ -38,8 +35,7 @@ export default function ExerciseScreen({ route, navigation }: ExerciseScreenProp
       index: 0,
       unit: { weight: 0, reps: 0 },
       operation: 'add'
-    },
-    enabled: filter
+    }
   });
   const queryClient = useQueryClient();
 
@@ -125,13 +121,6 @@ export default function ExerciseScreen({ route, navigation }: ExerciseScreenProp
 
   return (
     <View style={styles.centeredView}>
-      {/* <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}> */}
         <View style={styles.centeredView}>
           <View style={styles.header}>
             <Text style={styles.modalText}>{exerciseName}</Text>   
@@ -169,12 +158,7 @@ export default function ExerciseScreen({ route, navigation }: ExerciseScreenProp
           }
           <SwipeList key0={key}/>
         </View>
-      {/* </Modal> */}
-      {/* <Pressable
-        style={[styles.button, styles.buttonOpen]}
-        onPress={() => setModalVisible(true)}>
-        <Text style={styles.textStyle}>Show Modal</Text>
-      </Pressable> */}
+
     </View>
   );
 };
@@ -183,21 +167,26 @@ const styles = StyleSheet.create({
   centeredView: {
     width: '100%',
     height: '100%',
-    backgroundColor: 'white',
+    backgroundColor: darkMode.background,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    marginTop: 60
   },
   buttonAdd: {
-    backgroundColor: '#48CD90',
+    backgroundColor: darkMode.accentGreen,
     padding: 10,
-    marginTop: 10
+    marginTop: 10,
+    fontFamily: globalStyle.fontFamilyRegular,
+    color: darkMode.fontColor,
+    borderRadius: 3,
   },
   buttonUpdate: {
-    backgroundColor: '#fca031',
+    backgroundColor: darkMode.accentYellow,
     padding: 10,
-    marginTop: 10
+    marginTop: 10,
+    fontFamily: globalStyle.fontFamilyRegular,
+    color: darkMode.fontColor,
+    borderRadius: 3,
   },
   addUpdateText: {
     color: 'white',
@@ -205,40 +194,23 @@ const styles = StyleSheet.create({
     fontWeight: '600'
   },
   header: {
-    width: '100%',
+    width: '70%',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingTop: 10,
-    paddingBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: 'black'
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
-  backButton: {
-    marginLeft: 5
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    paddingBottom: 15,
+    paddingTop: 15,
+    borderBottomWidth: 3,
+    borderBottomColor: darkMode.border,
+    borderRadius: 1
   },
   modalText: {
     fontSize: 24,
     fontWeight: 'bold',
+    fontFamily: globalStyle.fontFamilyRegular,
+    color: darkMode.fontColor,
     flexGrow: 4,
     textAlign: 'center',
-    marginRight: 50
-  },
-  calendarIcon: {
-    marginRight: 5
   }
 });

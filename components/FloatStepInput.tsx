@@ -1,7 +1,8 @@
 import { Component } from 'react';
 import React from 'react';
-import { Text, View, StyleSheet, Button, TextInput } from 'react-native';
+import { Text, View, StyleSheet, Button, TextInput, Pressable } from 'react-native';
 import { addition, subtraction, OperatorFunction } from './NumberUtil';
+import { darkMode, globalStyle } from '../model/GlobalStyles';
 
 interface FloatStepInputProps {
   text: string;
@@ -34,11 +35,12 @@ class FloatStepInput extends Component<FloatStepInputProps> {
         <Text style={styles.label}>{text}</Text>
       </View>
       <View style={styles.container}>
-      
-        <Button
-          title="-"
+        <Pressable
           onPress={() => this.handleOp(subtraction, value, step)}
-        />
+          style={styles.subButton}
+        >
+          <Text style={styles.text}>-</Text>
+        </Pressable>
         <TextInput
           style={styles.input}
           onChangeText={(text) => this.handleInputChange(parseFloat(text))}
@@ -46,14 +48,14 @@ class FloatStepInput extends Component<FloatStepInputProps> {
           placeholder="useless placeholder"
           keyboardType="numeric"
         />
-        <Button
-          title="+"
+        <Pressable
           onPress={() => this.handleOp(addition, value, step)}
-        />
+          style={styles.addButton}
+        >
+          <Text style={styles.text}>+</Text>
+        </Pressable>
       </View>
-      </View>
-
-      
+      </View> 
     );
   }
 }
@@ -66,8 +68,10 @@ const styles = StyleSheet.create({
     height: 40,
     width: 80,
     margin: 12,
-    borderWidth: 1,
+    borderWidth: 2,
     padding: 10,
+    color: darkMode.fontColor,
+    borderColor: darkMode.border
   },
   container: {
     width: '100%',
@@ -75,11 +79,37 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    borderBottomWidth: 1
+  },
+  text: {
+    color: darkMode.fontColor,
+    fontFamily: globalStyle.fontFamilyRegular,
+    fontSize: 16,
+    fontWeight: 'bold'
   },
   label: {
     marginTop: 10,
-    textAlign: 'center'
+    textAlign: 'center',
+    fontSize: 14,
+    fontFamily: globalStyle.fontFamilyRegular,
+    color: darkMode.fontColor
+  },
+  subButton: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 30,
+    width: 30,
+    backgroundColor: darkMode.accentRed,
+    borderRadius: 2,
+  },
+  addButton: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 30,
+    width: 30,
+    backgroundColor: darkMode.accentGreen,
+    borderRadius: 2,
   }
 });
 

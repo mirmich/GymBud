@@ -6,19 +6,20 @@ import TopBar from "./TopBar";
 import { format } from "date-fns";
 import Constants from "expo-constants";
 import { useState } from "react";
+import { darkMode } from "../model/GlobalStyles";
+
 
 
 
 export default function Home({ navigation }) {
     const [selected, setSelected] = useState(format(new Date(),'yyyy-MM-dd'));
-    const [showCalendar, setShowCalendar] = useState(true);
+    const [showCalendar, setShowCalendar] = useState(false);
     const calendarPress = () => {
         setShowCalendar(!showCalendar);
     };
 
     return (
         <View style={styles.container}>
-            <Header />
             <TopBar selectedDay={selected} onCalendarPressed={calendarPress}/>
                 { showCalendar && <Calendar
                     onDayPress={ day => {
@@ -29,6 +30,8 @@ export default function Home({ navigation }) {
                 [selected]: {selected: true, disableTouchEvent: true, selectedColor: 'orange'}
                 }}
                 /> }
+            <Header />
+            
             <ExerciseSession selectedDate={selected} />
         </View>
       );
@@ -37,8 +40,8 @@ export default function Home({ navigation }) {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      paddingTop: Constants.statusBarHeight,
-      backgroundColor: '#ecf0f1',
-      padding: 8,
+      backgroundColor: darkMode.background,
+      flexDirection: 'column',
+      justifyContent: 'flex-start'
     }
 });

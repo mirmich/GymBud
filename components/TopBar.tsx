@@ -1,7 +1,9 @@
 import { Component } from 'react';
-import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, Pressable } from 'react-native';
 import { format } from 'date-fns';
 import React from 'react';
+import { FontAwesome5 } from '@expo/vector-icons'; 
+import { darkMode } from '../model/GlobalStyles';
 
 interface TopBarProps {
   selectedDay: string;
@@ -21,15 +23,15 @@ class TopBar extends Component<TopBarProps> {
 
     return (
       <View style={styles.container}>
-        <View style={styles.day}>
-          <Text style={styles.paragraph}>
-            {this.formatDate(selectedDay)}
-          </Text>
-        </View>
-        <TouchableOpacity onPress={onCalendarPressed} activeOpacity={0.5}>
-          <Image style={styles.calendarIcon} 
-                 source={require('../assets/icons/calendar-month.svg')} />
-        </TouchableOpacity>
+        <Text style={styles.text}>
+          {this.formatDate(selectedDay)}
+        </Text>
+        <Pressable onPress={onCalendarPressed}>
+        <FontAwesome5 
+          name="calendar-alt" 
+          size={24} 
+          color={darkMode.fontColor} />
+        </Pressable>
       </View>
     );
   }
@@ -37,24 +39,19 @@ class TopBar extends Component<TopBarProps> {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'grey',
+    backgroundColor: darkMode.accentPurple,
     paddingBottom: 5,
-    paddingTop: 5,
     flexDirection: 'row',
-    justifyContent: 'flex-end'
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingLeft: 16,
+    paddingRight: 16
   },
-  paragraph: {
+  text: {
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: 'white',
-  },
-  day: {
-    flexGrow: 4,
-    marginLeft: 50
-  },
-  calendarIcon: {
-    marginRight: 5
+    color: darkMode.fontColor,
   }
 });
 
