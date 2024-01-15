@@ -24,12 +24,6 @@ type SwipeListProps = {
 }
 
 const { width } = Dimensions.get('window');
-const gap = 10;
-const itemPerRow = 6;
-const totalGapSize = (itemPerRow - 1) * gap;
-const windowWidth = width;
-const childWidth = (windowWidth - totalGapSize) / itemPerRow;
-
 
 export default function SwipeList(props: SwipeListProps) {
   const [animationIsRunning, setAnimationIsRunning] = useState(false);

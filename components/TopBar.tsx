@@ -1,40 +1,51 @@
-import { Component } from 'react';
 import { Text, View, StyleSheet, Pressable } from 'react-native';
 import { format } from 'date-fns';
 import React from 'react';
-import { FontAwesome5 } from '@expo/vector-icons'; 
+import { FontAwesome5, FontAwesome } from '@expo/vector-icons'; 
 import { darkMode } from '../model/GlobalStyles';
+import { useNavigation } from '@react-navigation/native';
 
 interface TopBarProps {
   selectedDay: string;
   onCalendarPressed: () => void;
 }
 
-class TopBar extends Component<TopBarProps> {
+export default function TopBar(props: TopBarProps) {
+  const { selectedDay, onCalendarPressed } = props;
+  const navigation = useNavigation();
 
-  private formatDate(selectedDay: string): string {
+  const formatDate = (selectedDay: string): string => {
     if (selectedDay === format(new Date(),'yyyy-MM-dd')) {
       return 'Today';
     }
     return format(new Date(selectedDay), 'MMMM dd yyyy');
   }
-  public render() {
-    const { selectedDay, onCalendarPressed } = this.props;
 
-    return (
-      <View style={styles.container}>
-        <Text style={styles.text}>
-          {this.formatDate(selectedDay)}
-        </Text>
-        <Pressable onPress={onCalendarPressed}>
+  const navigateNewExercise = () => {
+    navigation.navigate('NewExercise', {
+      date: selectedDay,
+    });
+  }
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.text}>
+        {formatDate(selectedDay)}
+      </Text>
+      <Pressable onPress={navigateNewExercise}>
+        <FontAwesome 
+          name="plus" 
+          size={24} 
+          color={darkMode.fontColor} />
+      </Pressable>
+      <Pressable onPress={onCalendarPressed}>
         <FontAwesome5 
           name="calendar-alt" 
           size={24} 
           color={darkMode.fontColor} />
-        </Pressable>
-      </View>
-    );
-  }
+      </Pressable>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -43,7 +54,8 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
+    gap: 32,
     paddingLeft: 16,
     paddingRight: 16
   },
@@ -54,5 +66,3 @@ const styles = StyleSheet.create({
     color: darkMode.fontColor,
   }
 });
-
-export default TopBar;

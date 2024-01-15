@@ -1,17 +1,13 @@
 import { View, StyleSheet } from "react-native";
 import { Calendar } from "react-native-calendars";
-import ExerciseSession from "./ExerciseSession";
-import Header from "./Header";
-import TopBar from "./TopBar";
+import ExerciseSession from "../components/ExerciseSession";
+import Header from "../components/Header";
+import TopBar from "../components/TopBar";
 import { format } from "date-fns";
-import Constants from "expo-constants";
 import { useState } from "react";
 import { darkMode } from "../model/GlobalStyles";
 
-
-
-
-export default function Home({ navigation }) {
+export default function HomeScreen({ navigation }) {
     const [selected, setSelected] = useState(format(new Date(),'yyyy-MM-dd'));
     const [showCalendar, setShowCalendar] = useState(false);
     const calendarPress = () => {
@@ -31,7 +27,6 @@ export default function Home({ navigation }) {
                 }}
                 /> }
             <Header />
-            
             <ExerciseSession selectedDate={selected} />
         </View>
       );

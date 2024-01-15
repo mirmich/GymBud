@@ -3,12 +3,22 @@ import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
 import ExpandableList from './ExpandableList';
 import { darkMode } from '../model/GlobalStyles';
+import { useNavigation } from '@react-navigation/native';
 
 type ExerciseSessionProps = {
   selectedDate: string
 }
 
 export default function ExerciseSession(props: ExerciseSessionProps) {
+  const navigation = useNavigation();
+
+  const itemPressed = (name: string) => {
+    navigation.navigate('Exercise', {
+      date: props.selectedDate,
+      exerciseName: name
+    });
+  };
+  
   return (
     <View style={styles.container}>
       <View style={styles.headingContainer}>
@@ -20,22 +30,23 @@ export default function ExerciseSession(props: ExerciseSessionProps) {
         </TouchableOpacity>
       </View>
       <ExpandableList 
-        date={props.selectedDate} 
         categoryName='Back'
         listOfExercises={['Deadlift', 'Pull-up']}
+        showChildIcon={true}
+        onItemPress={itemPressed}
       ></ExpandableList>
       <ExpandableList 
-        date={props.selectedDate} 
         categoryName='Legs'
         listOfExercises={['Squat', 'Leg press']}
+        showChildIcon={true}
+        onItemPress={itemPressed}
       ></ExpandableList>
       <ExpandableList 
-        date={props.selectedDate} 
         categoryName='Biceps'
         listOfExercises={['Barbell curl', 'Ez-bar curl']}
+        showChildIcon={true}
+        onItemPress={itemPressed}
       ></ExpandableList>
-      {/* {ExpandableList('Back',c)} */}
-      {/* <ExerciseModal date={props.selectedDate} exerciseName='Deadlift' /> */}
     </View>
   );
 };

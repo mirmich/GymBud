@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, StyleSheet, Pressable } from 'react-native';
-import FloatStepInput from './FloatStepInput';
-import SwipeList from './SwipeList';
+import FloatStepInput from '../components/FloatStepInput';
+import SwipeList from '../components/SwipeList';
 import { WeightAndReps } from '../model/Category';
 import SetsStorageService from '../services/storage/SetsStorageService';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
