@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import React from 'react';
-import { Text, View, StyleSheet, Button, TextInput, Pressable } from 'react-native';
-import { addition, subtraction, OperatorFunction } from './NumberUtil';
+import { Text, View, StyleSheet, TextInput, Pressable } from 'react-native';
+import { addition, subtraction, OperatorFunction } from '../util/NumberUtil';
 import { darkMode, globalStyle } from '../model/GlobalStyles';
 
 interface FloatStepInputProps {

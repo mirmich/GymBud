@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -12,18 +12,24 @@ import { Roboto_400Regular } from "@expo-google-fonts/roboto";
 import { darkMode } from './model/GlobalStyles';
 import { AntDesign } from '@expo/vector-icons';
 import NewExerciseScreen from './screens/NewExerciseScreen';
+import StorageService from './services/storage/StorageService';
 
 export default function App() {
   const [queryClient] = useState(() => new QueryClient());
+  //const [storage] = useState(() => new StorageService());
   const [fontsLoaded] = useFonts({
     Raleway_700Bold_Italic,
     Roboto_400Regular
   });
 
+  useEffect(() => {
+    StorageService.init();
+  }, []);
+
   if (!fontsLoaded) {
     return <Text>Loading...</Text>;
   }
-
+  
   return (
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>

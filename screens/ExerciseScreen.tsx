@@ -11,6 +11,8 @@ import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../App';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { darkMode, globalStyle } from '../model/GlobalStyles';
+import { safeArray } from '../util/ArrayUtil';
+import ExerciseUnitQueries from '../services/queries/ExerciseUnitQueries';
 
 type ExerciseScreenRouteProp = RouteProp<RootStackParamList, 'Exercise'>;
 type ExerciseScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Exercise'>;
@@ -23,10 +25,11 @@ type ExerciseScreenProps = {
 
 export default function ExerciseScreen({ route, navigation }: ExerciseScreenProps) {
   const { date, exerciseName } = route.params;
-  const key = date.concat(exerciseName);
-  const { data }: {data: WeightAndReps[]} = SetsStorageService.getSets(key);
+  const key = date.concat('|').concat(exerciseName);
+  const { data: exerciseUnit} = ExerciseUnitQueries.getExerciseUnitByNameAndDate(exerciseName, date);
+  console.log(exerciseUnit);
 
-  const { data: selected }: {data: Selected}  = useQuery({
+  const { data: selected }: {data: Selected} = useQuery({
     queryKey: ['sets', 'selected', key],
     queryFn: () => {
       return StorageService.getItem(key + '-selected');
@@ -39,22 +42,12 @@ export default function ExerciseScreen({ route, navigation }: ExerciseScreenProp
   });
   const queryClient = useQueryClient();
 
-  const addSetMutation = useMutation({
-    mutationFn: (sets: {weight: number, reps: number}) => {
-        const currentSets = data ?? [];
-        const newSet: WeightAndReps = {
-          weight: sets.weight,
-          reps: sets.reps
-        };  
-        return StorageService.setItem(key, currentSets.concat([newSet]));
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['sets', 'get', key]
-      })
-    }
-  });
-
+  const addExerciseUnit = ExerciseUnitQueries.addExerciseUnit(
+    exerciseName, 
+    date, 
+    exerciseUnit,
+    queryClient
+  );
 
   const selectedSetMutation = useMutation({
     mutationFn: (selected: Selected) => { 
@@ -67,31 +60,10 @@ export default function ExerciseScreen({ route, navigation }: ExerciseScreenProp
     }
   });
 
-  const updateSetMutation = useMutation({
-    mutationFn: async (update: {
-      weight: number, 
-      reps: number, 
-      index: number}
-      ) => {
-        const currentSets = data ?? [];
-        const updatedSet: WeightAndReps = {
-          weight: update.weight,
-          reps: update.reps
-        }; 
-        currentSets[update.index] = updatedSet;
-        const backtoAdd: Selected = {
-          ...selected,
-          operation: 'add'
-        };
-        await selectedSetMutation.mutateAsync(backtoAdd);
-        return StorageService.setItem(key, currentSets);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['sets']
-      });
-    }
-  });
+  const updateExerciseUnit = ExerciseUnitQueries.updateExerciseUnit(
+    exerciseUnit, 
+    queryClient
+  );
 
   const handleWeight = async (newValue: number) => {
     const unit0: WeightAndReps = {
@@ -138,20 +110,23 @@ export default function ExerciseScreen({ route, navigation }: ExerciseScreenProp
           {(selected != null && selected.operation === 'modify') ?
           <Pressable 
             style={styles.buttonUpdate} 
-            onPress={() => updateSetMutation.mutateAsync({
-              weight: selected.unit.weight,
-              reps: selected.unit.reps,
-              index: (selected.index)
-            })}>
+            onPress={async () => {
+              updateExerciseUnit.mutateAsync({
+                set: selected.unit,
+                index: (selected.index)
+              });
+              const backtoAdd: Selected = {
+                  ...selected,
+                  operation: 'add'
+              };
+              await selectedSetMutation.mutateAsync(backtoAdd);
+            }}>
             <Text style={styles.addUpdateText}>Update</Text>
           </Pressable> : 
           <Pressable
           style={styles.buttonAdd} 
           onPress={async () => {
-            await addSetMutation.mutateAsync({
-            weight: selected.unit.weight, 
-            reps: selected.unit.reps
-          });
+            await addExerciseUnit.mutateAsync(selected.unit);
           }}>
             <Text style={styles.addUpdateText}>Add</Text>
           </Pressable>
