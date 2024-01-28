@@ -1,0 +1,154 @@
+{
+    "categories": [
+        {
+            "name": "Back",
+            "exercises": [
+                "Barbell Row",
+                "Dumbell Row",
+                "Good Morning",
+                "Barbell Shrug",
+                "Chin Up",
+                "Deadlift",
+                "Lat Pulldown",
+                "T-Bar Row",
+                "Seated Cable Row",
+                "Face Pull",
+                "One-Arm Dumbbell Row",
+                "Pull-Up",
+                "Hyperextension",
+                "Inverted Row",
+                "Single-Arm Lat Pulldown",
+                "Machine Row",
+                "Pendlay Row",
+                "Meadows Row",
+                "Rack Pull"
+            ]
+        },
+        {
+            "name": "Legs",
+            "exercises": [
+                "Barbell Squat",
+                "Barbell Glute Bridge",
+                "Leg Press",
+                "Lunges",
+                "Leg Curl",
+                "Leg Extension",
+                "Calf Raise",
+                "Hack Squat",
+                "Step-Up",
+                "Romanian Deadlift",
+                "Front Squat",
+                "Box Jump",
+                "Bulgarian Split Squat",
+                "Standing Calf Raise",
+                "Hamstring Curl",
+                "Goblet Squat",
+                "Wall Sit"
+            ]
+        },
+        {
+            "name": "Abs",
+            "exercises": [
+                "Crunch",
+                "Hanging Crunch",
+                "Plank",
+                "Leg Raise",
+                "Russian Twist",
+                "Mountain Climber",
+                "Bicycle Crunch",
+                "Hanging Leg Raise",
+                "Hanging Knee Raise",
+                "Woodchopper",
+                "Reverse Crunch",
+                "Ab Rollout",
+                "Side Plank",
+                "V-Up",
+                "Dragon Flag",
+                "Lying Leg Raise",
+                "Toe Touches",
+                "Flutter Kicks",
+                "Windshield Wiper",
+                "Spiderman Plank",
+                "Scissor Kick"
+            ]
+        },
+        {
+            "name": "Biceps",
+            "exercises": [
+                "Barbell Curl",
+                "Dumbbell Curl",
+                "Preacher Curl",
+                "Hammer Curl",
+                "Concentration Curl",
+                "Cable Curl",
+                "Reverse Curl",
+                "EZ Bar Curl",
+                "Incline Dumbbell Curl",
+                "Spider Curl",
+                "Zottman Curl",
+                "Scott Curl",
+                "Cross Body Hammer Curl",
+                "Close-Grip Chin-Up",
+                "Fat Grip Hammer Curl",
+                "Fat Grip Barbell Curl",
+                "Incline Hammer Curl",
+                "Seated Machine Curl"
+            ]
+        },
+        {
+            "name": "Chest",
+            "exercises": [
+                "Bench Press",
+                "Dumbbell Press",
+                "Incline Bench Press",
+                "Decline Bench Press",
+                "Dumbbell Fly",
+                "Cable Fly",
+                "Dips",
+                "Machine Chest Press",
+                "Pec Deck Machine",
+                "Chest Pullover",
+                "Incline Dumbbell Fly",
+                "Decline Dumbbell Press",
+                "Machine Fly",
+                "Landmine Press",
+                "Smith Machine Bench Press"
+            ]
+        },
+        {
+            "name": "Shoulders",
+            "exercises": [
+                "Overhead Press",
+                "Dumbbell Shoulder Press",
+                "Lateral Raise",
+                "Front Raise",
+                "Rear Delt Fly",
+                "Push Press",
+                "Face Pulls",
+                "Shoulder Scaption",
+                "Barbell Shoulder Press",
+                "Machine Shoulder Press",
+                "Dumbbell Lateral Raise",
+                "Cable Lateral Raise",
+                "Reverse Pec Deck Machine",
+                "Smith Machine Overhead Press",
+                "Seated Dumbbell Press",
+                "Single-Arm Dumbbell Press"
+            ]
+        },
+        {
+            "name": "Triceps",
+            "exercises": [
+                "Close-Grip Bench Press",
+                "Dumbell Skull Crushers",
+                "Overhead Tricep Extension",
+                "Cable Tricep Pushdown",
+                "Single-Arm Overhead Tricep Extension",
+                "Tricep Rope Pushdowns",
+                "EZ-Bar Skull Crushers",
+                "Behind-the-Back Cable Tricep Extension",
+                "Seated Tricep Press"
+            ]
+        }
+    ]
+}

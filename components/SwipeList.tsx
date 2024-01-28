@@ -18,25 +18,24 @@ import SetsStorageService from '../services/storage/SetsStorageService';
 import { WeightAndReps } from '../model/Category';
 import { darkMode } from '../model/GlobalStyles';
 import { SimpleLineIcons } from '@expo/vector-icons';
+import { safeArray } from '../util/ArrayUtil';
+import ExerciseUnitQueries from '../services/queries/ExerciseUnitQueries';
+import { ExerciseUnitType } from '../services/storage/Schema';
 
 type SwipeListProps = {
   key0: string
 }
 
 const { width } = Dimensions.get('window');
-const gap = 10;
-const itemPerRow = 6;
-const totalGapSize = (itemPerRow - 1) * gap;
-const windowWidth = width;
-const childWidth = (windowWidth - totalGapSize) / itemPerRow;
-
 
 export default function SwipeList(props: SwipeListProps) {
   const [animationIsRunning, setAnimationIsRunning] = useState(false);
   const rowTranslateAnimatedValues = Array(999).fill('').map((_) => new Animated.Value(1));
   const queryClient = useQueryClient();
   const key  = props.key0;
-  const { data } = SetsStorageService.getSets(key);
+  //const { data } = SetsStorageService.getSets(key);
+  const { data: exerciseUnit} = ExerciseUnitQueries.getExerciseUnitById(key);
+  console.log(exerciseUnit);
 
   const selectedSetMutation = useMutation({
     mutationFn: (selected: Selected) => { 
@@ -49,16 +48,10 @@ export default function SwipeList(props: SwipeListProps) {
     }
   });
 
-  const updateSetsMutation = useMutation({
-    mutationFn: async (update: WeightAndReps[]) => {
-        return StorageService.setItem(key, update);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['sets', 'get', key]
-      });
-    }
-  });
+  const replaceSets = ExerciseUnitQueries.replaceWeightAndReps(
+    exerciseUnit, 
+    queryClient
+  );
 
   const renderItem2 = ({item, index }) => {
     return (
@@ -107,26 +100,31 @@ export default function SwipeList(props: SwipeListProps) {
           duration: 200,
           useNativeDriver: false
         }).start( async () => {
-          const newData = [...data];
+          const newData = [...exerciseUnit.weightAndReps];
           newData.splice(parseInt(swipeData.key), 1);
-          await updateSetsMutation.mutateAsync(newData);
+          await replaceSets.mutateAsync(newData);
           setAnimationIsRunning(false);
         });
       }
     }
 
-    const transformDataForPresentation = (data: WeightAndReps[]) => {
-      const currentSets = (data as WeightAndReps[]) ?? []
-      console.log(currentSets)
-      return currentSets.filter(Boolean)
-      .map((set, i) => ConversionUtil.toPresent(set.weight, set.reps, i));
+    const transformDataForPresentation = (exerciseUnit: ExerciseUnitType) => {
+      if(exerciseUnit) {
+        const currentSets = safeArray(exerciseUnit.weightAndReps)
+        console.log(currentSets)
+        return currentSets.filter(Boolean)
+        .map((set, i) => ConversionUtil.toPresent(set.weight, set.reps, i));
+      } else {
+        return [];
+      }
+      
     };
 
     return (
       <View style={styles.container}>
         <SwipeListView
           disableRightSwipe
-          data={transformDataForPresentation(data)}
+          data={transformDataForPresentation(exerciseUnit)}
           renderItem={renderItem2}
           renderHiddenItem={renderHiddenItem}
           rightOpenValue={-Dimensions.get('window').width}

@@ -1,7 +1,165 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
+import { ExerciseUnitSchema, MyDatabase, MyDatabaseCollections, categorySchema } from './Schema';
+import {
+  createRxDatabase,
+} from 'rxdb';
+import { addRxPlugin } from 'rxdb';
+import { RxDBMigrationPlugin } from 'rxdb/plugins/migration-schema';
+addRxPlugin(RxDBMigrationPlugin);
+import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
+addRxPlugin(RxDBDevModePlugin);
+
+import initialData from '../../assets/initialExercises.json';
+import { WeightAndReps } from '../../model/Category';
+
 
 class StorageService {
+
+  static myDatabase: MyDatabase;
+
+  static async init() {
+    this.myDatabase = await createRxDatabase<MyDatabaseCollections>({
+      name: 'mydatabase',
+      storage: getRxStorageDexie()
+    });
+    // await this.myDatabase.destroy();
+    // await this.myDatabase.remove();
+    await this.myDatabase.addCollections({
+      categories: {
+        schema: categorySchema,
+        // migrationStrategies: {
+        //   // 1 means, this transforms data from version 0 to version 1
+        //   1: async function(oldDoc){
+        //     oldDoc.exercises = []; // string to unix
+        //     return oldDoc;
+        //   }
+        // }
+      },
+      exercises: {
+        schema: ExerciseUnitSchema,
+      }
+    });
+    await this.populate();
+  }
+
+  private static async populate() {
+    initialData.categories.map(async (category) => {
+      const dbCategory = await this.findCategoryById(category.name);
+      if(dbCategory) {
+        const dbExercises: string[] = dbCategory.get('exercises');
+        await dbCategory.patch({
+          exercises: [...new Set(dbExercises.concat(category.exercises))]
+        });
+      } else {
+        await this.addCategory(category.name);
+      }
+
+    });
+
+  }
+
+  /**
+   * Adds a new category with empty array of exercises
+   * @param name0 id/name of the category
+   */
+  static async addCategory(name0: string) {
+    await this.myDatabase.categories.insert({
+      id: name0,
+      name: name0,
+      exercises: []
+    })
+    console.log("category added")
+  }
+  /**
+   * Deletes given category
+   * @param name id/name of the category
+   */
+  static async deleteCategory(name: string) {
+    const foundDocument = await this.myDatabase.categories.findOne({
+      selector: {
+          id: name
+      }
+  }).exec();
+    foundDocument.remove();
+  }
+
+  static async findCategoryById(name0: string) {
+    return await this.myDatabase.categories.findOne({
+      selector: {
+          id: name0
+      }
+    }).exec();
+  }
+
+  static async listAllCategories() {
+    return await this.myDatabase.categories.find().exec();
+  }
+
+  static async exerciseUnitById(exerciseName0: string, date0: string) {
+    const id0 = this.myDatabase.exercises.schema.getPrimaryOfDocumentData({
+      exerciseName: exerciseName0,
+      date: date0
+  });
+
+    return await this.myDatabase.exercises.findOne({
+      selector: {
+        id: id0
+      }
+    }).exec();
+  }
+
+  static async listAllExerciseUnits() {
+    return await this.myDatabase.exercises.find().exec();
+  }
+
+  static async listAllExerciseUnitsByDate(date0: string) {
+    try {
+      const result = await this.myDatabase.exercises.find({
+        selector: {
+          date: date0
+        } 
+      }).exec();
+      console.log(result);
+      return result;
+  } catch (error) {
+      console.error('Error in listAllExerciseUnitsByDate:', error);
+      throw error; // Propagate the error
+  }
+  }
+
+  static async addExerciseUnit(
+    name0: string, 
+    date0: string,
+    sets: WeightAndReps[]
+  ){
+    try{
+      await this.myDatabase.exercises.upsert({
+        exerciseName: name0,
+        date: date0,
+        weightAndReps: sets
+      })
+      console.log("exercise unit added")
+    } catch (error) {
+      console.error('Error in addExerciseUnit:', error);
+      throw error; // Propagate the error
+
+    }
+    
+  }
+
+  static async updateExerciseUnit(
+    exerciseName0: string,
+    date0: string,
+    sets: WeightAndReps[]
+  ){
+    const currentExerciseUnit = await this.exerciseUnitById(exerciseName0, date0);
+    await currentExerciseUnit.patch({
+      weightAndReps: sets
+    });
+    console.log("exercise unit updated")
+  }
 
   static async setItem(key: string, value: any) {
     try {
