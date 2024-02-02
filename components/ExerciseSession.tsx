@@ -1,10 +1,9 @@
 
 import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import ExpandableList from './ExpandableList';
 import { darkMode } from '../model/GlobalStyles';
 import { useNavigation } from '@react-navigation/native';
-import { ExerciseUnitType } from '../services/storage/Schema';
 import ExerciseUnitQueries from '../services/queries/ExerciseUnitQueries';
 import { safeArray } from '../util/ArrayUtil';
 import CategoryQueries from '../services/queries/CategoryQueries';
@@ -17,18 +16,22 @@ export default function ExerciseSession(props: ExerciseSessionProps) {
   const navigation = useNavigation();
   const { data: exerciseUnits } = ExerciseUnitQueries.listAllExerciseUnitsByDate(props.selectedDate);
   const { data: categories } = CategoryQueries.listAllCategories();
-  const exercisesDone = new Map<string, string[]>();
   console.log(categories);
-  console.log(exerciseUnits);
-  if(categories && exerciseUnits) {
-    safeArray(categories).forEach((category) => exercisesDone.set(category.name, []));
-    safeArray(exerciseUnits).forEach((exercise) => {
-      const category = categories.find((cat) => cat.exercises.includes(exercise.exerciseName));
-      const exercises = exercisesDone.get(category.name).concat([exercise.exerciseName])
-      exercisesDone.set(category.name, [...new Set(exercises)]);
-    })
-  }
   
+  const findExerciseForSession = () => {
+    if(categories && exerciseUnits) {
+      const exercisesDone = new Map<string, string[]>();
+      safeArray(categories).forEach((category) => exercisesDone.set(category.name, []));
+        safeArray(exerciseUnits).forEach((exercise) => {
+          const category = categories.find((cat) => cat.exercises.includes(exercise.exerciseName));
+          const exercises = exercisesDone.get(category.name).concat([exercise.exerciseName])
+          exercisesDone.set(category.name, [...new Set(exercises)]);
+        })
+      return Array.from(exercisesDone);
+  } else {
+    return [];
+  }
+  }
   
 
   const itemPressed = (name: string) => {
@@ -45,8 +48,8 @@ export default function ExerciseSession(props: ExerciseSessionProps) {
           <Text style={styles.paragraph}>Session</Text>
         </View>
       </View>
-      {
-        Array.from(exercisesDone)
+      { (categories && exerciseUnits) ? (
+        findExerciseForSession()
         .filter((cat) => cat[1].length > 0)
         .map(([cat, exercises]) => (
           <ExpandableList 
@@ -55,7 +58,7 @@ export default function ExerciseSession(props: ExerciseSessionProps) {
             showChildIcon={true}
             onItemPress={itemPressed}
           />
-        ))
+        ))) : null
       }
     </View>
   );

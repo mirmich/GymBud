@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import StorageService from '../storage/StorageService';
-import { CategoryDocType } from '../storage/Schema';
+import { CategoryDocType } from '../storage/schemas/CategorySchema';
 
 export default class CategoryQueries {
 

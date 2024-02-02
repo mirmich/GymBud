@@ -16,14 +16,14 @@ import StorageService from './services/storage/StorageService';
 
 export default function App() {
   const [queryClient] = useState(() => new QueryClient());
-  //const [storage] = useState(() => new StorageService());
+  const [isDBInit, setDBInit] = useState(false);
   const [fontsLoaded] = useFonts({
     Raleway_700Bold_Italic,
     Roboto_400Regular
   });
 
   useEffect(() => {
-    StorageService.init();
+    StorageService.init().then(_ => setDBInit(true));
   }, []);
 
   if (!fontsLoaded) {
@@ -33,29 +33,34 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home"
-      screenOptions={{
-        headerShadowVisible: false
-      }}>
-        {makeScreen({
-          name0: "Home",
-          component0: HomeScreen,
-          title: "Home",
-          backButton: () => undefined
-        })}
-        {makeScreen({
-          name0: "Exercise",
-          component0: ExerciseScreen,
-          title: "Exercise",
-          backButton: backToHome
-        })}
-        {makeScreen({
-          name0: "NewExercise",
-          component0: NewExerciseScreen,
-          title: "Add",
-          backButton: backToHome
-        })}
-      </Stack.Navigator> 
+        {
+          isDBInit ? (
+            <Stack.Navigator initialRouteName="Home"
+              screenOptions={{
+                headerShadowVisible: false
+              }}>
+                {makeScreen({
+                  name0: "Home",
+                  component0: HomeScreen,
+                  title: "Home",
+                  backButton: () => undefined
+                })}
+                {makeScreen({
+                  name0: "Exercise",
+                  component0: ExerciseScreen,
+                  title: "Exercise",
+                  backButton: backToHome
+                })}
+                {makeScreen({
+                  name0: "NewExercise",
+                  component0: NewExerciseScreen,
+                  title: "Add",
+                  backButton: backToHome
+                })}
+              </Stack.Navigator> 
+        ) : null
+        }
+      
       </NavigationContainer>
       </QueryClientProvider>
   );

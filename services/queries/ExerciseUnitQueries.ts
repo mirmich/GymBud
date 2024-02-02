@@ -1,9 +1,8 @@
-import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import StorageService from '../storage/StorageService';
-import { CategoryDocType, ExerciseUnitType } from '../storage/Schema';
 import { safeArray } from '../../util/ArrayUtil';
 import { WeightAndReps } from '../../model/Category';
-import { Selected } from '../../model/Storage';
+import { ExerciseUnitType } from '../storage/schemas/ExerciseUnitSchema';
 
 export default class ExerciseUnitQueries {
 
@@ -31,7 +30,6 @@ export default class ExerciseUnitQueries {
         return useQuery({
           queryKey: ['exerciseUnit', 'list', 'all'],
           queryFn: async () => {
-            const res = await StorageService.listAllExerciseUnitsByDate(date);
             return (await StorageService.listAllExerciseUnitsByDate(date))
                 .map((exe) => exe.toJSON() as ExerciseUnitType);
           }  
