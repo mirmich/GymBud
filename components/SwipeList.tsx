@@ -4,7 +4,6 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  Image,
   View,
 } from 'react-native';
 import React, { useState } from 'react';
@@ -14,16 +13,17 @@ import ConversionUtil  from '../util/UnitConversionUtil';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import StorageService from '../services/storage/StorageService';
 import { Selected } from '../model/Storage';
-import SetsStorageService from '../services/storage/SetsStorageService';
-import { WeightAndReps } from '../model/Category';
 import { darkMode } from '../model/GlobalStyles';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { safeArray } from '../util/ArrayUtil';
 import ExerciseUnitQueries from '../services/queries/ExerciseUnitQueries';
-import { ExerciseUnitType } from '../services/storage/Schema';
+import { ExerciseUnitType } from '../services/storage/schemas/ExerciseUnitSchema';
+import PersonalRecordQueries from '../services/queries/PersonalRecordQueries';
+import { PersonalRecordType } from '../services/storage/schemas/PersonalRecordSchema';
 
 type SwipeListProps = {
-  key0: string
+  exerciseName: string
+  date: string
 }
 
 const { width } = Dimensions.get('window');
@@ -32,10 +32,9 @@ export default function SwipeList(props: SwipeListProps) {
   const [animationIsRunning, setAnimationIsRunning] = useState(false);
   const rowTranslateAnimatedValues = Array(999).fill('').map((_) => new Animated.Value(1));
   const queryClient = useQueryClient();
-  const key  = props.key0;
-  //const { data } = SetsStorageService.getSets(key);
+  const key = props.date.concat('|').concat(props.exerciseName);;
   const { data: exerciseUnit} = ExerciseUnitQueries.getExerciseUnitById(key);
-  console.log(exerciseUnit);
+  const { data: prs } = PersonalRecordQueries.listPersonalRecordsForExercises(props.exerciseName);
 
   const selectedSetMutation = useMutation({
     mutationFn: (selected: Selected) => { 
@@ -47,6 +46,10 @@ export default function SwipeList(props: SwipeListProps) {
       })
     }
   });
+
+  const isPR = (weight: number, reps: number) => {
+      return safeArray(prs).some((x) => x.reps === reps && x.weight === weight)
+  }
 
   const replaceSets = ExerciseUnitQueries.replaceWeightAndReps(
     exerciseUnit, 
@@ -71,11 +74,14 @@ export default function SwipeList(props: SwipeListProps) {
             {index: index, unit: {weight: item.amount, reps: item.reps}, operation: 'modify'} as Selected
           )}
           style={false ? styles.selected : styles.rowFront}>
-          <SimpleLineIcons 
+          {isPR(item.amount, item.reps) ?
+            <SimpleLineIcons 
             style={styles.trophy} 
             name="trophy" 
             size={24} 
-            color={darkMode.fontColor}/>
+            color={darkMode.fontColor}/> : null
+          
+          }
           <Text style={styles.listText}>{item.text}</Text>
           
         </Pressable>
@@ -110,10 +116,8 @@ export default function SwipeList(props: SwipeListProps) {
 
     const transformDataForPresentation = (exerciseUnit: ExerciseUnitType) => {
       if(exerciseUnit) {
-        const currentSets = safeArray(exerciseUnit.weightAndReps)
-        console.log(currentSets)
-        return currentSets.filter(Boolean)
-        .map((set, i) => ConversionUtil.toPresent(set.weight, set.reps, i));
+        return safeArray(exerciseUnit.weightAndReps).filter(Boolean)
+          .map((set, i) => ConversionUtil.toPresent(set.weight, set.reps, i));
       } else {
         return [];
       }

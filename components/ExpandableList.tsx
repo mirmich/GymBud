@@ -15,13 +15,20 @@ type ExpandableListProps = {
 export default function ExpandableList(props: ExpandableListProps) {
   const [expanded, setExpanded] = useState(false);
   
+  const putKey = (key: string) => {
+    console.log(key);
+    return key;
+  }
+  console.log(props.listOfExercises);
+  console.log(props.categoryName );
   return (
     <View>
     <ListItem.Accordion 
+      key={putKey(props.categoryName)}
       containerStyle={styles.listContainer}
       content={
-          <ListItem.Content style={styles.topListContentContainer}>
-            <ListItem.Title style={styles.item}>{props.categoryName}</ListItem.Title>
+          <ListItem.Content key={putKey(props.categoryName + 'content')} style={styles.topListContentContainer}>
+            <ListItem.Title key={putKey(props.categoryName + 'title')} style={styles.item}>{props.categoryName}</ListItem.Title>
             {expanded ? (
               <AntDesign style={styles.item} name="up" size={24} color={darkMode.fontColor} />
             ) : (
@@ -37,16 +44,15 @@ export default function ExpandableList(props: ExpandableListProps) {
       {props.listOfExercises.map((name, i) => (
         <ListItem 
           containerStyle={styles.listContainer} 
-          key={i} 
+          key={putKey(name + i)} 
           onPress={() => props.onItemPress(name)} 
           bottomDivider>
-          <ListItem.Content style={styles.topListContentContainer}>
-            <ListItem.Title style={styles.bottomItem}>{name}</ListItem.Title>
+          <ListItem.Content key={putKey(name + i + 'content')} style={styles.topListContentContainer}>
+            <ListItem.Title key={putKey(name + i + 'title')}style={styles.bottomItem}>{name}</ListItem.Title>
             {props.showChildIcon &&
               <AntDesign name="right" size={24} color={darkMode.fontColor} />
             }
           </ListItem.Content>
-          <ListItem.Chevron />
         </ListItem>
       ))}
     </ListItem.Accordion>

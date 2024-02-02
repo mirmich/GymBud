@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, View, StyleSheet, Pressable } from 'react-native';
 import FloatStepInput from '../components/FloatStepInput';
 import SwipeList from '../components/SwipeList';
 import { WeightAndReps } from '../model/Category';
-import SetsStorageService from '../services/storage/SetsStorageService';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import StorageService from '../services/storage/StorageService';
 import { Selected } from '../model/Storage';
@@ -11,8 +10,8 @@ import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../App';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { darkMode, globalStyle } from '../model/GlobalStyles';
-import { safeArray } from '../util/ArrayUtil';
 import ExerciseUnitQueries from '../services/queries/ExerciseUnitQueries';
+import PersonalRecordQueries from '../services/queries/PersonalRecordQueries';
 
 type ExerciseScreenRouteProp = RouteProp<RootStackParamList, 'Exercise'>;
 type ExerciseScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Exercise'>;
@@ -27,7 +26,10 @@ export default function ExerciseScreen({ route, navigation }: ExerciseScreenProp
   const { date, exerciseName } = route.params;
   const key = date.concat('|').concat(exerciseName);
   const { data: exerciseUnit} = ExerciseUnitQueries.getExerciseUnitByNameAndDate(exerciseName, date);
-  console.log(exerciseUnit);
+  const { data: prs } = PersonalRecordQueries.listPersonalRecordsForExercises(exerciseName);
+  const [hasSyncedAfterStart, setSyncedAfterStart] = useState(false);
+  console.log('Prs all');
+  console.log(prs);
 
   const { data: selected }: {data: Selected} = useQuery({
     queryKey: ['sets', 'selected', key],
@@ -49,6 +51,12 @@ export default function ExerciseScreen({ route, navigation }: ExerciseScreenProp
     queryClient
   );
 
+  const addPersonalRecord = PersonalRecordQueries.addPersonalRecord(
+    exerciseName, 
+    date, 
+    queryClient
+  );
+
   const selectedSetMutation = useMutation({
     mutationFn: (selected: Selected) => { 
         return StorageService.setItem(key + '-selected', selected);
@@ -64,6 +72,43 @@ export default function ExerciseScreen({ route, navigation }: ExerciseScreenProp
     exerciseUnit, 
     queryClient
   );
+
+  const syncAfterStart = async() => {
+    if(exerciseUnit 
+      && prs && exerciseUnit.weightAndReps && !hasSyncedAfterStart
+    ) {
+      console.log('syncPrs after start called')
+      await syncPrs();
+      setSyncedAfterStart(true);
+    }
+    
+  }
+
+  const syncPrs = async () => {
+      if(exerciseUnit 
+        && prs && exerciseUnit.weightAndReps
+      ) {
+        let prsMap = new Map<number,number>();
+        prs.forEach((pr) => prsMap.set(pr.reps, pr.weight));
+        exerciseUnit.weightAndReps.concat(selected.unit).forEach((set) => {
+          const indices = Array.from(Array(set.reps+1).keys()).slice(1);
+          indices.forEach((rep) => {
+            const currentPr = prsMap.get(rep);
+            if(!currentPr || currentPr < set.weight) {
+              prsMap.set(rep, set.weight);
+            }
+          });
+
+        });
+        prsMap.forEach(async (weight0, reps0) => 
+          await addPersonalRecord.mutateAsync({weight: weight0, reps: reps0})
+        )
+      }
+  }
+
+  useEffect(() => {
+    syncAfterStart();
+  }, [exerciseUnit, prs, hasSyncedAfterStart]);
 
   const handleWeight = async (newValue: number) => {
     const unit0: WeightAndReps = {
@@ -127,11 +172,12 @@ export default function ExerciseScreen({ route, navigation }: ExerciseScreenProp
           style={styles.buttonAdd} 
           onPress={async () => {
             await addExerciseUnit.mutateAsync(selected.unit);
+            await syncPrs();
           }}>
             <Text style={styles.addUpdateText}>Add</Text>
           </Pressable>
           }
-          <SwipeList key0={key}/>
+          <SwipeList exerciseName={exerciseName} date={date}/>
         </View>
 
     </View>

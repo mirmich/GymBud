@@ -1,7 +1,6 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
-import { ExerciseUnitSchema, MyDatabase, MyDatabaseCollections, categorySchema } from './Schema';
 import {
   createRxDatabase,
 } from 'rxdb';
@@ -13,6 +12,20 @@ addRxPlugin(RxDBDevModePlugin);
 
 import initialData from '../../assets/initialExercises.json';
 import { WeightAndReps } from '../../model/Category';
+import { categorySchema } from './schemas/CategorySchema';
+import { ExerciseUnitSchema } from './schemas/ExerciseUnitSchema';
+
+import { RxDatabase } from 'rxdb';
+import { CategoryCollection } from './schemas/CategorySchema';
+import { ExerciseUnitCollection } from './schemas/ExerciseUnitSchema';
+import { PersonalRecordCollection, PersonalRecordDocument, PersonalRecordSchema } from './schemas/PersonalRecordSchema';
+
+export type MyDatabaseCollections = {
+    categories: CategoryCollection
+    exercises: ExerciseUnitCollection
+    personalrecords: PersonalRecordCollection
+}
+export type MyDatabase = RxDatabase<MyDatabaseCollections>;
 
 
 class StorageService {
@@ -24,23 +37,32 @@ class StorageService {
       name: 'mydatabase',
       storage: getRxStorageDexie()
     });
-    // await this.myDatabase.destroy();
-    // await this.myDatabase.remove();
-    await this.myDatabase.addCollections({
-      categories: {
-        schema: categorySchema,
-        // migrationStrategies: {
-        //   // 1 means, this transforms data from version 0 to version 1
-        //   1: async function(oldDoc){
-        //     oldDoc.exercises = []; // string to unix
-        //     return oldDoc;
-        //   }
-        // }
-      },
-      exercises: {
-        schema: ExerciseUnitSchema,
-      }
-    });
+    //  await this.myDatabase.destroy();
+    //  await this.myDatabase.remove();
+    try {
+      await this.myDatabase.addCollections({
+        categories: {
+          schema: categorySchema,
+          // migrationStrategies: {
+          //   // 1 means, this transforms data from version 0 to version 1
+          //   1: async function(oldDoc){
+          //     oldDoc.exercises = []; // string to unix
+          //     return oldDoc;
+          //   }
+          // }
+        },
+        exercises: {
+          schema: ExerciseUnitSchema,
+        },
+        personalrecords: {
+          schema : PersonalRecordSchema
+        }
+      });
+    } catch(error) {
+      console.error('Error during DB init:', error);
+      throw error;
+    }
+    
     await this.populate();
   }
 
@@ -58,6 +80,41 @@ class StorageService {
 
     });
 
+  }
+
+
+  /**
+   * Adds a new personal record to DB
+   * @param name0 id/name of the category
+   */
+  static async addPersonalRecord(
+    execiseName0: string, 
+    date0: string,
+    weight0: number,
+    reps0: number
+  ) {
+    await this.myDatabase.personalrecords.upsert({
+      exerciseName: execiseName0,
+      date: date0,
+      weight: weight0,
+      reps: reps0
+    })
+    console.log("pr added")
+  }
+
+  static async getPrsForExercise(
+    execiseName0: string, 
+  ) {
+    try {
+      return await this.myDatabase.personalrecords.find({
+        selector: {
+          exerciseName: execiseName0
+        }
+      }).exec();
+    } catch(error) {
+      console.error('Error in getPrsForExercise', error);
+      throw error;
+    }
   }
 
   /**
@@ -101,7 +158,7 @@ class StorageService {
     const id0 = this.myDatabase.exercises.schema.getPrimaryOfDocumentData({
       exerciseName: exerciseName0,
       date: date0
-  });
+    });
 
     return await this.myDatabase.exercises.findOne({
       selector: {
@@ -121,7 +178,6 @@ class StorageService {
           date: date0
         } 
       }).exec();
-      console.log(result);
       return result;
   } catch (error) {
       console.error('Error in listAllExerciseUnitsByDate:', error);
