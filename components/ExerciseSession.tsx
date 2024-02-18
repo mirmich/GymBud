@@ -15,9 +15,7 @@ type ExerciseSessionProps = {
 export default function ExerciseSession(props: ExerciseSessionProps) {
   const navigation = useNavigation();
   const { data: exerciseUnits } = ExerciseUnitQueries.listAllExerciseUnitsByDate(props.selectedDate);
-  const { data: categories } = CategoryQueries.listAllCategories();
-  console.log(categories);
-  
+  const { data: categories } = CategoryQueries.listAllCategoriesNew();
   const findExerciseForSession = () => {
     if(categories && exerciseUnits) {
       const exercisesDone = new Map<string, string[]>();

@@ -1,8 +1,5 @@
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
-import StorageService from '../storage/StorageService';
-import { CategoryDocType } from '../storage/schemas/CategorySchema';
-import { PersonalRecordType } from '../storage/schemas/PersonalRecordSchema';
-import { ExerciseUnitType } from '../storage/schemas/ExerciseUnitSchema';
+import PersonalRecordPersistence from '../storage/PersonalRecordPersistence';
 
 export default class PersonalRecordQueries {
 
@@ -12,16 +9,14 @@ export default class PersonalRecordQueries {
       return useQuery({
         queryKey: [this.queryPrefix, 'list', exerciseName],
         queryFn: async () => {
-          return (await StorageService.getPrsForExercise(exerciseName))
-            .map((pr) => pr.toJSON() as PersonalRecordType)
-                
+          return PersonalRecordPersistence.listAllPersonalRecordByExercise(exerciseName);     
         }  
       });
     }
 
     static addPersonalRecord(
-      exerciseName0: string,
-      date0: string,
+      exerciseName: string,
+      date: string,
       queryClient: QueryClient
   ) {
       return useMutation({
@@ -29,9 +24,9 @@ export default class PersonalRecordQueries {
             weight: number,
             reps: number
           }) => {
-              return StorageService.addPersonalRecord(
-                exerciseName0,
-                date0,
+              return PersonalRecordPersistence.add(
+                exerciseName,
+                date,
                 pr.weight,
                 pr.reps
               );

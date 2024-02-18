@@ -9,20 +9,19 @@ export default function TopBarPlain() {
 
     return (
         <View style={styles.container}>
-          <Pressable onPress={() => StorageService.addCategory("Back") }>
+          {/* <Pressable onPress={() => StorageService.addCategory("Back") }>
             <FontAwesome 
               name="plus" 
               size={24} 
               color={darkMode.fontColor} />
-          </Pressable>
+          </Pressable> */}
           <Pressable onPress={async () => {
-            const categories = (await StorageService.listAllCategories());
-            console.log(categories);
+            // const categories = (await StorageService.listAllCategories());
             } }>
-            <FontAwesome 
+            {/* <FontAwesome 
               name="list" 
               size={24} 
-              color={darkMode.fontColor} />
+              color={darkMode.fontColor} /> */}
           </Pressable>
         </View>
       );

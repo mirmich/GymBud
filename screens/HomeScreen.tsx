@@ -20,10 +20,20 @@ export default function HomeScreen({ navigation }) {
                 { showCalendar && <Calendar
                     onDayPress={ day => {
                         setSelected(day.dateString);
-                        console.log(selected);
                     }}
                 markedDates={{
-                [selected]: {selected: true, disableTouchEvent: true, selectedColor: 'orange'}
+                [selected]: {selected: true, disableTouchEvent: true}
+                }}
+                theme={{
+                    backgroundColor: darkMode.fontColor,
+                    calendarBackground: darkMode.background,
+                    textSectionTitleColor: darkMode.fontColor,
+                    selectedDayBackgroundColor: darkMode.accentPurple,
+                    selectedDayTextColor: '#ffffff',
+                    todayTextColor: darkMode.accentBlue,
+                    dayTextColor: darkMode.fontColor,
+                    textDisabledColor: darkMode.accentGrey,
+                    monthTextColor: darkMode.fontColor
                 }}
                 /> }
             <Header />

@@ -1,15 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
-import StorageService from '../storage/StorageService';
-import { CategoryDocType } from '../storage/schemas/CategorySchema';
+import CategoryPersistence from '../storage/CategoryPersistence';
+
 
 export default class CategoryQueries {
 
-    static listAllCategories() {
+    static listAllCategoriesNew() {
       return useQuery({
         queryKey: ['categories', 'list', 'all'],
         queryFn: async () => {
-            return (await StorageService.listAllCategories())
-                .map((cat) => cat.toJSON() as CategoryDocType);
+            return CategoryPersistence.listAllCategories();
         }  
       });
     }

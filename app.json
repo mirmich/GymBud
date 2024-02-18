@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#872aad"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -21,7 +21,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#872aad"
       },
       "package": "com.mirekt.GymBud"
     },
@@ -32,6 +32,11 @@
       "eas": {
         "projectId": "642e7d35-d852-4388-8df0-545c7bac521c"
       }
-    }
+    },
+    "plugins": [
+      ["@morrowdigital/watermelondb-expo-plugin"],
+      "expo-font",
+      "expo-build-properties"
+    ]
   }
 }
