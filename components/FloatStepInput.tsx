@@ -17,7 +17,8 @@ class FloatStepInput extends Component<FloatStepInputProps> {
 
   handleOp(operatorFn: OperatorFunction, value0: number, step0: number) {
     const result = operatorFn(value0, step0);
-    this.handleInputChange(result);
+    const sanitazed = result < 1 ? 1 : result;
+    this.handleInputChange(sanitazed);
   }
 
   handleInputChange(newValue: number) {
@@ -27,8 +28,6 @@ class FloatStepInput extends Component<FloatStepInputProps> {
   render() {
     const { text, step } = this.props;
     const  value  = this.props.value;
-    console.log(value);
-
     return (
       <View style={styles.parent}>
       <View>
@@ -44,7 +43,7 @@ class FloatStepInput extends Component<FloatStepInputProps> {
         <TextInput
           style={styles.input}
           onChangeText={(text) => this.handleInputChange(parseFloat(text))}
-          value={value.toFixed(1)}
+          value={value.toString()}
           placeholder="useless placeholder"
           keyboardType="numeric"
         />

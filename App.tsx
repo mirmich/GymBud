@@ -5,7 +5,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen';
 import ExerciseScreen from './screens/ExerciseScreen';
 import { useFonts } from 'expo-font';
-import { Text, Pressable } from 'react-native';
+import { Text, Pressable, View } from 'react-native';
 // Fonts
 import { Raleway_700Bold_Italic } from "@expo-google-fonts/raleway";
 import { Roboto_400Regular } from "@expo-google-fonts/roboto";
@@ -13,6 +13,7 @@ import { darkMode } from './model/GlobalStyles';
 import { AntDesign } from '@expo/vector-icons';
 import NewExerciseScreen from './screens/NewExerciseScreen';
 import StorageService from './services/storage/StorageService';
+import PersistenceService from './services/storage/PersistenceService';
 
 export default function App() {
   const [queryClient] = useState(() => new QueryClient());
@@ -23,7 +24,10 @@ export default function App() {
   });
 
   useEffect(() => {
-    StorageService.init().then(_ => setDBInit(true));
+    // StorageService.init()
+    //.then(_ => PersistenceService.initDB())
+    PersistenceService.initDB()
+    .then(_ => setDBInit(true))
   }, []);
 
   if (!fontsLoaded) {
@@ -58,7 +62,7 @@ export default function App() {
                   backButton: backToHome
                 })}
               </Stack.Navigator> 
-        ) : null
+        ) : <View><Text>DB not loaded</Text></View>
         }
       
       </NavigationContainer>

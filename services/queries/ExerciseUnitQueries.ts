@@ -1,8 +1,8 @@
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
-import StorageService from '../storage/StorageService';
 import { safeArray } from '../../util/ArrayUtil';
 import { WeightAndReps } from '../../model/Category';
-import { ExerciseUnitType } from '../storage/schemas/ExerciseUnitSchema';
+import ExerciseUnitPersistence from '../storage/ExerciseUnitPersistence';
+import { ExerciseUnit } from '../storage/ExerciseUnitModel';
 
 export default class ExerciseUnitQueries {
 
@@ -10,28 +10,17 @@ export default class ExerciseUnitQueries {
       return useQuery({
         queryKey: ['exerciseUnit', 'get', exerciseName, date],
         queryFn: async () => {
-            const res = (await StorageService.exerciseUnitById(exerciseName, date))._data;
-            return res as ExerciseUnitType;
+            const records = await ExerciseUnitPersistence.listAllExerciseUnitsByNameAndDate(exerciseName, date);
+            return records[0];
         }  
       });
     }
-    static getExerciseUnitById(id: string) {
-        return useQuery({
-          queryKey: ['exerciseUnit', 'get', id],
-          queryFn: async () => {
-              const split = id.split('|');
-              const res = (await StorageService.exerciseUnitById(split[1], split[0]))._data;
-              return res as ExerciseUnitType;
-          }  
-        });
-      }
 
     static listAllExerciseUnitsByDate(date: string) {
         return useQuery({
-          queryKey: ['exerciseUnit', 'list', 'all'],
+          queryKey: ['exerciseUnit', 'list', 'all', date],
           queryFn: async () => {
-            return (await StorageService.listAllExerciseUnitsByDate(date))
-                .map((exe) => exe.toJSON() as ExerciseUnitType);
+            return ExerciseUnitPersistence.listAllExerciseUnitsByDate(date);
           }  
         });
       }
@@ -39,7 +28,7 @@ export default class ExerciseUnitQueries {
     static addExerciseUnit(
         exerciseName0: string,
         date0: string,
-        currentExerciseUnit: ExerciseUnitType, 
+        currentExerciseUnit: ExerciseUnit, 
         queryClient: QueryClient
     ) {
         return useMutation({
@@ -47,7 +36,7 @@ export default class ExerciseUnitQueries {
                 const sets = (currentExerciseUnit) 
                     ? currentExerciseUnit.weightAndReps.concat([set])
                     : [set]; 
-                return StorageService.addExerciseUnit(
+                return ExerciseUnitPersistence.add(
                     exerciseName0,
                     date0,
                     safeArray(sets)
@@ -62,7 +51,7 @@ export default class ExerciseUnitQueries {
     }
 
     static updateExerciseUnit(
-        currentExerciseUnit: ExerciseUnitType,
+        currentExerciseUnit: ExerciseUnit,
         queryClient: QueryClient
         ) {
             return useMutation({
@@ -76,7 +65,7 @@ export default class ExerciseUnitQueries {
                   reps: update.set.reps
                 }; 
                 currentSets[update.index] = updatedSet;
-                return StorageService.updateExerciseUnit(
+                return ExerciseUnitPersistence.add(
                     currentExerciseUnit.exerciseName, 
                     currentExerciseUnit.date,
                     currentSets
@@ -91,12 +80,12 @@ export default class ExerciseUnitQueries {
     }
 
     static replaceWeightAndReps(
-        currentExerciseUnit: ExerciseUnitType,
+        currentExerciseUnit: ExerciseUnit,
         queryClient: QueryClient
         ) {
             return useMutation({
             mutationFn: (sets: WeightAndReps[]) => {
-                return StorageService.updateExerciseUnit(
+                return ExerciseUnitPersistence.add(
                     currentExerciseUnit.exerciseName, 
                     currentExerciseUnit.date,
                     sets

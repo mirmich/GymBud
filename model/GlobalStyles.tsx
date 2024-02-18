@@ -1,14 +1,16 @@
 
 
 type DarkMode = {
-    background: string,
-    border: string,
-    fontColor: string,
+    background: string
+    border: string
+    fontColor: string
     accentPurple: string
     accentGreen: string
     accentRed: string
     accentYellow: string
     accentBlue: string
+    accentGold: string
+    accentGrey: string
 }
 
 type GlobalStyle = {
@@ -27,5 +29,7 @@ export const darkMode: DarkMode = {
     accentGreen: "#2ecc71",
     accentRed: "#e74c3c",
     accentYellow: "#f39c12",
-    accentBlue: "#3498db"
+    accentBlue: "#3498db",
+    accentGold: "#ffd700",
+    accentGrey: '#b8b8b8'
 }

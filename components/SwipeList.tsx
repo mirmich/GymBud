@@ -10,16 +10,16 @@ import React, { useState } from 'react';
 
 import { SwipeListView } from 'react-native-swipe-list-view';
 import ConversionUtil  from '../util/UnitConversionUtil';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import StorageService from '../services/storage/StorageService';
+import { useQueryClient } from '@tanstack/react-query';
 import { Selected } from '../model/Storage';
 import { darkMode } from '../model/GlobalStyles';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { safeArray } from '../util/ArrayUtil';
 import ExerciseUnitQueries from '../services/queries/ExerciseUnitQueries';
-import { ExerciseUnitType } from '../services/storage/schemas/ExerciseUnitSchema';
 import PersonalRecordQueries from '../services/queries/PersonalRecordQueries';
-import { PersonalRecordType } from '../services/storage/schemas/PersonalRecordSchema';
+import SelectedSetQueries from '../services/queries/SelectedSetQueries';
+import { WeightAndReps } from '../model/Category';
+import { ExerciseUnit } from '../services/storage/ExerciseUnitModel';
 
 type SwipeListProps = {
   exerciseName: string
@@ -32,29 +32,34 @@ export default function SwipeList(props: SwipeListProps) {
   const [animationIsRunning, setAnimationIsRunning] = useState(false);
   const rowTranslateAnimatedValues = Array(999).fill('').map((_) => new Animated.Value(1));
   const queryClient = useQueryClient();
-  const key = props.date.concat('|').concat(props.exerciseName);;
-  const { data: exerciseUnit} = ExerciseUnitQueries.getExerciseUnitById(key);
-  const { data: prs } = PersonalRecordQueries.listPersonalRecordsForExercises(props.exerciseName);
 
-  const selectedSetMutation = useMutation({
-    mutationFn: (selected: Selected) => { 
-        return StorageService.setItem(key + '-selected', selected);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['sets', 'selected', key]
-      })
-    }
-  });
+  // List all exercises with given name for given date
+  const { data: exerciseUnit} = ExerciseUnitQueries.getExerciseUnitByNameAndDate(
+    props.exerciseName,
+    props.date
+  );
 
-  const isPR = (weight: number, reps: number) => {
-      return safeArray(prs).some((x) => x.reps === reps && x.weight === weight)
-  }
+  // List all PRs for given exercise
+  const { data: prs } = PersonalRecordQueries.listPersonalRecordsForExercises(
+    props.exerciseName
+  );
+
+  const selectedSetMutation = SelectedSetQueries.selectedSetMutation(
+    props.exerciseName,
+    props.date,
+    queryClient
+  );
 
   const replaceSets = ExerciseUnitQueries.replaceWeightAndReps(
     exerciseUnit, 
     queryClient
   );
+
+  const isPR = (weight: number, reps: number) => {
+    const neco = safeArray(prs).filter(x => x.weight === weight);
+    const maxRep = Math.max(...neco.map(x => x.reps));
+    return maxRep === reps;
+  }
 
   const renderItem2 = ({item, index }) => {
     return (
@@ -74,15 +79,25 @@ export default function SwipeList(props: SwipeListProps) {
             {index: index, unit: {weight: item.amount, reps: item.reps}, operation: 'modify'} as Selected
           )}
           style={false ? styles.selected : styles.rowFront}>
-          {isPR(item.amount, item.reps) ?
-            <SimpleLineIcons 
-            style={styles.trophy} 
-            name="trophy" 
-            size={24} 
-            color={darkMode.fontColor}/> : null
+          <View style={styles.trophyWrapper}>
+            {isPR(item.amount, item.reps) ?
+              <SimpleLineIcons 
+              style={styles.trophy} 
+              name="trophy" 
+              size={24} 
+              color={darkMode.fontColor}/> : null
+            
+            }
+          </View>
+          <View style={styles.textWrapper}>
+            <Text style={styles.listTextWithTrophy}>{item.text}</Text>
+          </View>
           
-          }
-          <Text style={styles.listText}>{item.text}</Text>
+          {/* {isPR(item.amount, item. reps) ?
+            <Text style={styles.listTextWithTrophy}>{item.text}</Text> :
+            <Text style={styles.listTextWithoutTrophy}>{item.text}</Text>
+          } */}
+          
           
         </Pressable>
       </Animated.View>
@@ -114,9 +129,9 @@ export default function SwipeList(props: SwipeListProps) {
       }
     }
 
-    const transformDataForPresentation = (exerciseUnit: ExerciseUnitType) => {
+    const transformDataForPresentation = (exerciseUnit: ExerciseUnit) => {
       if(exerciseUnit) {
-        return safeArray(exerciseUnit.weightAndReps).filter(Boolean)
+        return safeArray(exerciseUnit.weightAndReps as WeightAndReps[]).filter(Boolean)
           .map((set, i) => ConversionUtil.toPresent(set.weight, set.reps, i));
       } else {
         return [];
@@ -192,9 +207,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
     right: 0,
   },
-  listText: {
+  textWrapper: {
+    display: 'flex',
+  },
+  listTextWithTrophy: {
     color: darkMode.fontColor,
     marginLeft: (width) / 2 - 130
+  },
+  trophyWrapper: {
+    width: 30
   },
   trophy: {
     alignSelf: 'center',

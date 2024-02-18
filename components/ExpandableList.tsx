@@ -16,11 +16,9 @@ export default function ExpandableList(props: ExpandableListProps) {
   const [expanded, setExpanded] = useState(false);
   
   const putKey = (key: string) => {
-    console.log(key);
+
     return key;
   }
-  console.log(props.listOfExercises);
-  console.log(props.categoryName );
   return (
     <View>
     <ListItem.Accordion 

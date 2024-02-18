@@ -28,11 +28,6 @@ export type Exercise = {
   name: String,
   exerciseType: ExerciseType
 }
-
-export type Category = {
-  name: String,
-  exercises: Exercise[]
-}
 /**
  * key: `${index}`, 
       units: 'kg',
