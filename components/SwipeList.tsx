@@ -55,10 +55,18 @@ export default function SwipeList(props: SwipeListProps) {
     queryClient
   );
 
-  const isPR = (weight: number, reps: number) => {
+  const softDeleteRecord = PersonalRecordQueries.softDeletePersonalRecord(
+    props.exerciseName,
+    props.date, 
+    queryClient
+  );
+
+  const isPR = (weight: number, reps: number, index: number) => {
     const neco = safeArray(prs).filter(x => x.weight === weight);
     const maxRep = Math.max(...neco.map(x => x.reps));
-    return maxRep === reps;
+    const setEq = (set: WeightAndReps) => set.weight === weight && set.reps === maxRep;
+    const isFirst = safeArray(exerciseUnit.weightAndReps).findIndex(setEq) === index;
+    return isFirst;
   }
 
   const renderItem2 = ({item, index }) => {
@@ -80,7 +88,7 @@ export default function SwipeList(props: SwipeListProps) {
           )}
           style={false ? styles.selected : styles.rowFront}>
           <View style={styles.trophyWrapper}>
-            {isPR(item.amount, item.reps) ?
+            {isPR(item.amount, item.reps, index) ?
               <SimpleLineIcons 
               style={styles.trophy} 
               name="trophy" 
@@ -92,13 +100,6 @@ export default function SwipeList(props: SwipeListProps) {
           <View style={styles.textWrapper}>
             <Text style={styles.listTextWithTrophy}>{item.text}</Text>
           </View>
-          
-          {/* {isPR(item.amount, item. reps) ?
-            <Text style={styles.listTextWithTrophy}>{item.text}</Text> :
-            <Text style={styles.listTextWithoutTrophy}>{item.text}</Text>
-          } */}
-          
-          
         </Pressable>
       </Animated.View>
     )};
@@ -122,8 +123,15 @@ export default function SwipeList(props: SwipeListProps) {
           useNativeDriver: false
         }).start( async () => {
           const newData = [...exerciseUnit.weightAndReps];
-          newData.splice(parseInt(swipeData.key), 1);
+          const removed: WeightAndReps[] = newData.splice(parseInt(swipeData.key), 1);
+          console.log(removed);
           await replaceSets.mutateAsync(newData);
+          if(removed.length > 0) {
+            await softDeleteRecord.mutateAsync({
+              weight: removed[0].weight,
+              reps: removed[0].reps
+            })
+          }
           setAnimationIsRunning(false);
         });
       }

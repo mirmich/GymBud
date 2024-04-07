@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, useState } from 'react';
 import React from 'react';
 import { Text, View, StyleSheet, TextInput, Pressable } from 'react-native';
 import { addition, subtraction, OperatorFunction } from '../util/NumberUtil';
@@ -11,52 +11,52 @@ interface FloatStepInputProps {
   value: number;
 }
 
-
-class FloatStepInput extends Component<FloatStepInputProps> {
+export default function FloatStepInput(props: FloatStepInputProps) {
   
+  const { text, step } = props;
+  //const  value  = props.value;
+  const [value, setValue] = useState(props.value.toFixed(1));
+  // image should be square
 
-  handleOp(operatorFn: OperatorFunction, value0: number, step0: number) {
-    const result = operatorFn(value0, step0);
+  const handleOp = (operatorFn: OperatorFunction, value0: string, step0: number) => {
+    const result = operatorFn(parseFloat(value0), step0);
     const sanitazed = result < 1 ? 1 : result;
-    this.handleInputChange(sanitazed);
+    handleInputChange(sanitazed.toFixed(1));
   }
 
-  handleInputChange(newValue: number) {
-    this.props.onChangeValue(newValue);
+  const handleInputChange = (newValue: string) => {
+    setValue(newValue)
+    props.onChangeValue(parseFloat(newValue));
   }
 
-  render() {
-    const { text, step } = this.props;
-    const  value  = this.props.value;
-    return (
-      <View style={styles.parent}>
-      <View>
-        <Text style={styles.label}>{text}</Text>
-      </View>
-      <View style={styles.container}>
-        <Pressable
-          onPress={() => this.handleOp(subtraction, value, step)}
-          style={styles.subButton}
-        >
-          <Text style={styles.text}>-</Text>
-        </Pressable>
-        <TextInput
-          style={styles.input}
-          onChangeText={(text) => this.handleInputChange(parseFloat(text))}
-          value={value.toString()}
-          placeholder="useless placeholder"
-          keyboardType="numeric"
-        />
-        <Pressable
-          onPress={() => this.handleOp(addition, value, step)}
-          style={styles.addButton}
-        >
-          <Text style={styles.text}>+</Text>
-        </Pressable>
-      </View>
-      </View> 
-    );
-  }
+  return (
+    <View style={styles.parent}>
+    <View>
+      <Text style={styles.label}>{text}</Text>
+    </View>
+    <View style={styles.container}>
+      <Pressable
+        onPress={() => handleOp(subtraction, value, step)}
+        style={styles.subButton}
+      >
+        <Text style={styles.text}>-</Text>
+      </Pressable>
+      <TextInput
+        style={styles.input}
+        onChangeText={(text) => handleInputChange(text)}
+        value={value}
+        placeholder="0"
+        keyboardType="numeric"
+      />
+      <Pressable
+        onPress={() => handleOp(addition, value, step)}
+        style={styles.addButton}
+      >
+        <Text style={styles.text}>+</Text>
+      </Pressable>
+    </View>
+    </View> 
+  );
 }
 
 const styles = StyleSheet.create({
@@ -111,5 +111,3 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   }
 });
-
-export default FloatStepInput;

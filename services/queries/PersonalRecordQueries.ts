@@ -18,7 +18,7 @@ export default class PersonalRecordQueries {
       exerciseName: string,
       date: string,
       queryClient: QueryClient
-  ) {
+    ) {
       return useMutation({
           mutationFn: (pr: {
             weight: number,
@@ -38,4 +38,30 @@ export default class PersonalRecordQueries {
           }
       });  
   }
+
+  static softDeletePersonalRecord(
+    exerciseName: string,
+    date: string,
+    queryClient: QueryClient
+  ) {
+    return useMutation({
+        mutationFn: (pr: {
+          weight: number
+          reps: number
+        }) => {
+            return PersonalRecordPersistence.softDeleteRecord(
+              exerciseName,
+              date,
+              pr.weight,
+              0,
+              pr.reps
+            );
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+            queryKey: [this.queryPrefix]
+            })
+        }
+    });  
+}
   }
