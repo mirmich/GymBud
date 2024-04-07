@@ -27,6 +27,10 @@ export default function TopBar(props: TopBarProps) {
     });
   }
 
+  const navigateProfile = () => {
+    navigation.navigate('Profile');
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>
@@ -43,6 +47,12 @@ export default function TopBar(props: TopBarProps) {
           name="calendar-alt" 
           size={24} 
           color={darkMode.fontColor} />
+      </Pressable>
+      <Pressable onPress={navigateProfile}>
+        <FontAwesome 
+          name="user" 
+          size={24} 
+            color={darkMode.fontColor} />
       </Pressable>
     </View>
   );

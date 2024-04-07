@@ -12,8 +12,8 @@ import { Roboto_400Regular } from "@expo-google-fonts/roboto";
 import { darkMode } from './model/GlobalStyles';
 import { AntDesign } from '@expo/vector-icons';
 import NewExerciseScreen from './screens/NewExerciseScreen';
-import StorageService from './services/storage/StorageService';
 import PersistenceService from './services/storage/PersistenceService';
+import ProfileScreen from './screens/ProfileScreen';
 
 export default function App() {
   const [queryClient] = useState(() => new QueryClient());
@@ -61,6 +61,12 @@ export default function App() {
                   title: "Add",
                   backButton: backToHome
                 })}
+                {makeScreen({
+                  name0: "Profile",
+                  component0: ProfileScreen,
+                  title: "Profile",
+                  backButton: backToHome
+                })}
               </Stack.Navigator> 
         ) : <View><Text>DB not loaded</Text></View>
         }
@@ -83,6 +89,7 @@ export type RootStackParamList = {
   Home: undefined;
   Exercise: ExerciseRouteParams;
   NewExercise: NewExerciseRouteParams;
+  Profile: undefined;
 };
 
 type Component = (a, b) => React.JSX.Element

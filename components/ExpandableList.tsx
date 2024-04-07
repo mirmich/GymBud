@@ -1,5 +1,5 @@
 import  { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { ListItem } from '@rneui/themed';
 import React from 'react';
 import { AntDesign } from '@expo/vector-icons';
@@ -20,7 +20,7 @@ export default function ExpandableList(props: ExpandableListProps) {
     return key;
   }
   return (
-    <View>
+    <ScrollView>
     <ListItem.Accordion 
       key={putKey(props.categoryName)}
       containerStyle={styles.listContainer}
@@ -54,7 +54,7 @@ export default function ExpandableList(props: ExpandableListProps) {
         </ListItem>
       ))}
     </ListItem.Accordion>
-    </View>
+    </ScrollView>
     ); 
 };
 

@@ -11,7 +11,7 @@ export function calculatePr(
         return mayhewFormula(weight, reps);
     }
     else {
-        epleyFormula(weight, reps);
+        return epleyFormula(weight, reps);
     }
 }
 /**

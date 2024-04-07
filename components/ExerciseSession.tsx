@@ -1,5 +1,5 @@
 
-import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import React, { useState } from 'react';
 import ExpandableList from './ExpandableList';
 import { darkMode } from '../model/GlobalStyles';
@@ -40,7 +40,7 @@ export default function ExerciseSession(props: ExerciseSessionProps) {
   };
   
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.headingContainer}>
         <View style={styles.day}>
           <Text style={styles.paragraph}>Session</Text>
@@ -53,12 +53,12 @@ export default function ExerciseSession(props: ExerciseSessionProps) {
           <ExpandableList 
             categoryName={cat}
             listOfExercises={exercises}
-            showChildIcon={true}
+            showChildIcon={false}
             onItemPress={itemPressed}
           />
         ))) : null
       }
-    </View>
+    </ScrollView>
   );
 };
 
