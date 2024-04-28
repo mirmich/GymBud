@@ -1,3 +1,4 @@
+import { map } from '@nozbe/watermelondb/utils/rx';
 import { WeightAndReps } from '../../model/Category';
 import { ExerciseUnit } from './ExerciseUnitModel';
 import PersistenceService from './PersistenceService';
@@ -61,5 +62,14 @@ export default class ExerciseUnitPersistence {
         Q.and(
           Q.where('exerciseName', exerciseName)
         ));
+  }
+
+  static async listAllDates() {
+    const allExercises = await PersistenceService.database.get<ExerciseUnit>(tableName).query();
+
+    const uniqueDates = Array.from(
+      new Set(allExercises.map(exercise => exercise.date))
+    );
+    return uniqueDates;
   } 
 }
