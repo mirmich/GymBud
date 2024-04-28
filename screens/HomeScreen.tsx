@@ -39,6 +39,7 @@ export default function HomeScreen({ navigation }) {
     useEffect(() => {
         populateDates();
     }, [allDates]);
+
     const deleteDay = (
         markedDates: MarkedDates,
         date: string
@@ -89,12 +90,7 @@ export default function HomeScreen({ navigation }) {
                         
                         calendarPress();
                     }}
-                // markedDates={{
-                // [selected]: {selected: true, disableTouchEvent: true}
-                // }}
                 markedDates={neco}
-
-
                 theme={{
                     backgroundColor: darkMode.fontColor,
                     calendarBackground: darkMode.background,
