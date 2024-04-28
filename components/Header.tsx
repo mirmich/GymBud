@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     borderRadius: 1
   },
   paragraph: {
-    fontSize: 45,
+    fontSize: 32,
     fontFamily: 'Raleway_700Bold_Italic',
     textAlign: 'center',
     color: 'white',

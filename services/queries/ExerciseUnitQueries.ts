@@ -23,7 +23,16 @@ export default class ExerciseUnitQueries {
             return ExerciseUnitPersistence.listAllExerciseUnitsByDate(date);
           }  
         });
-      }
+    }
+
+    static listAllDates() {
+      return useQuery({
+        queryKey: ['exerciseUnit', 'list', 'all', 'dates'],
+        queryFn: async () => {
+          return ExerciseUnitPersistence.listAllDates();
+        }  
+      });
+  }
 
     static addExerciseUnit(
         exerciseName0: string,
