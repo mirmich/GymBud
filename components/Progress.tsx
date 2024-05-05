@@ -1,10 +1,9 @@
-import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
-import { darkMode, globalStyle } from '../model/GlobalStyles';
-import { Entypo } from '@expo/vector-icons';
-import { useQueryClient } from '@tanstack/react-query';
-import ProfileQueries from '../services/queries/ProfileQueries';
-import StrengthLevelQueries from '../services/queries/StrengthLevelQueries';
+import React from "react";
+import { Text, View, StyleSheet } from "react-native";
+import { darkMode, globalStyle } from "../model/GlobalStyles";
+import { Entypo } from "@expo/vector-icons";
+import ProfileQueries from "../services/queries/ProfileQueries";
+import StrengthLevelQueries from "../services/queries/StrengthLevelQueries";
 /*
             [0, 71] < 5%
             [71, 94]   5% - 20%  
@@ -15,12 +14,18 @@ import StrengthLevelQueries from '../services/queries/StrengthLevelQueries';
 */
 
 type ProgressProps = {
-  exerciseName: string,
-  oneRepMax: number
-}
+  exerciseName: string;
+  oneRepMax: number;
+};
 export default function Progress(props: ProgressProps) {
-  const queryClient = useQueryClient();
-  const levels = ['Weak', 'Begginer', 'Novice', 'Intermediate', 'Advanced', 'Elite'];
+  const levels = [
+    "Weak",
+    "Begginer",
+    "Novice",
+    "Intermediate",
+    "Advanced",
+    "Elite",
+  ];
   const { data: bodyWeight } = ProfileQueries.getProfileProperty("bodyWeight");
   const { data: position0 } = StrengthLevelQueries.getPosition(
     props.exerciseName,
@@ -34,15 +39,22 @@ export default function Progress(props: ProgressProps) {
   return (
     <View>
       <View style={styles.textContainer}>
-      <Text style={styles.text}>{levels[(position0 == null ? 0 : position0.index)]}</Text>
+        <Text style={styles.text}>
+          {levels[position0 == null ? 0 : position0.index]}
+        </Text>
       </View>
       <View style={styles.container}>
-        <Entypo name="triangle-down" size={24} color='#828282' style={{
-          position: 'absolute',
-          top: -14,
-          left: 300 * (position0 == null ? 0 : position0.position),
-          zIndex: 998,
-          }} />
+        <Entypo
+          name="triangle-down"
+          size={24}
+          color="#828282"
+          style={{
+            position: "absolute",
+            top: -14,
+            left: 300 * (position0 == null ? 0 : position0.position),
+            zIndex: 998,
+          }}
+        />
         <View style={styles.barContainer}>
           <View style={styles.purple}></View>
           <View style={styles.pink}></View>
@@ -56,38 +68,29 @@ export default function Progress(props: ProgressProps) {
   );
 }
 
-const pointerPointer = (position: number) => {
-  return {
-    position: 'absolute',
-    top: -14,
-    left: 300/position,
-    zIndex: 998,
-  }
-}
-
 const barHeight = 10;
 const barBorderWidth = 1;
 const barBorderColor = darkMode.accentGrey;
 const styles = StyleSheet.create({
   container: {
-    position: 'relative'
+    position: "relative",
   },
   textContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 10
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    marginBottom: 10,
   },
   text: {
     color: darkMode.fontColor,
-    fontFamily: globalStyle.fontFamilyRegular
+    fontFamily: globalStyle.fontFamilyRegular,
   },
   barContainer: {
-    display: 'flex',
-    flexDirection: 'row'
+    display: "flex",
+    flexDirection: "row",
   },
   pointer: {
-    position: 'absolute',
+    position: "absolute",
     top: -14,
     left: 270,
     zIndex: 998,
@@ -98,19 +101,18 @@ const styles = StyleSheet.create({
   purple: {
     width: 30,
     height: barHeight,
-    backgroundColor: '#4b006e',
+    backgroundColor: "#4b006e",
     borderTopLeftRadius: 4,
     borderBottomLeftRadius: 4,
     borderLeftWidth: barBorderWidth,
     borderBottomWidth: barBorderWidth,
     borderTopWidth: barBorderWidth,
     borderColor: barBorderColor,
-
   },
   pink: {
     width: 45,
     height: barHeight,
-    backgroundColor: '#E73895',
+    backgroundColor: "#E73895",
     //borderLeftWidth: barBorderWidth,
     borderBottomWidth: barBorderWidth,
     borderTopWidth: barBorderWidth,
@@ -119,7 +121,7 @@ const styles = StyleSheet.create({
   white: {
     width: 90,
     height: barHeight,
-    backgroundColor: '#FFF',
+    backgroundColor: "#FFF",
     //borderLeftWidth: barBorderWidth,
     borderBottomWidth: barBorderWidth,
     borderTopWidth: barBorderWidth,
@@ -128,7 +130,7 @@ const styles = StyleSheet.create({
   yellow: {
     width: 90,
     height: barHeight,
-    backgroundColor: '#FADA5E',
+    backgroundColor: "#FADA5E",
     //borderLeftWidth: barBorderWidth,
     borderBottomWidth: barBorderWidth,
     borderTopWidth: barBorderWidth,
@@ -137,7 +139,7 @@ const styles = StyleSheet.create({
   red: {
     width: 45,
     height: barHeight,
-    backgroundColor: '#9B1C31',
+    backgroundColor: "#9B1C31",
     //borderWidth: barBorderWidth,
     borderBottomWidth: barBorderWidth,
     borderTopWidth: barBorderWidth,
@@ -146,12 +148,12 @@ const styles = StyleSheet.create({
   blue: {
     width: 30,
     height: barHeight,
-    backgroundColor: '#4169e1',
+    backgroundColor: "#4169e1",
     borderRightWidth: barBorderWidth,
     borderBottomWidth: barBorderWidth,
     borderTopWidth: barBorderWidth,
     borderColor: barBorderColor,
     borderBottomRightRadius: 4,
-    borderTopRightRadius: 4
-  }
+    borderTopRightRadius: 4,
+  },
 });

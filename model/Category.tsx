@@ -1,33 +1,32 @@
-
-type ExerciseType =  {}
+type ExerciseType = NonNullable<unknown>;
 
 type Weights = {
-  weight: number
-}
+  weight: number;
+};
 
 type Reps = {
-  reps: number
-} 
+  reps: number;
+};
 
 type Time = {
-  seconds: number
-} 
+  seconds: number;
+};
 
 type Distance = {
-  meters: number
-} 
+  meters: number;
+};
 
-export type DistanceAndTime = Distance & Time & ExerciseType
-export type WeightAndReps = Weights & Reps & ExerciseType
-export type WeightAndTime = Weights & Time & ExerciseType
-export type WeightAndDistance = Weights & Distance & ExerciseType
-export type RepsAndTime = Reps & Time & ExerciseType
-export type RepsAndDistance = Reps & Distance & ExerciseType
+export type DistanceAndTime = Distance & Time & ExerciseType;
+export type WeightAndReps = Weights & Reps & ExerciseType;
+export type WeightAndTime = Weights & Time & ExerciseType;
+export type WeightAndDistance = Weights & Distance & ExerciseType;
+export type RepsAndTime = Reps & Time & ExerciseType;
+export type RepsAndDistance = Reps & Distance & ExerciseType;
 
 export type Exercise = {
-  name: String,
-  exerciseType: ExerciseType
-}
+  name: string;
+  exerciseType: ExerciseType;
+};
 /**
  * key: `${index}`, 
       units: 'kg',
@@ -38,9 +37,9 @@ export type Exercise = {
  */
 
 export type UnitOfExercise = {
-  key: string,
-  units: string,
-  amount: number,
-  reps: number,
-  text: string
-}
+  key: string;
+  units: string;
+  amount: number;
+  reps: number;
+  text: string;
+};

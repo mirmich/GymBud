@@ -1,13 +1,11 @@
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 class StorageService {
-
   static async setItem(key: string, value: any) {
     try {
       await AsyncStorage.setItem(key, JSON.stringify(value));
     } catch (e) {
-      console.error('AsyncStorage setItem error:', e);
+      console.error("AsyncStorage setItem error:", e);
     }
   }
 
@@ -19,7 +17,7 @@ class StorageService {
       }
       return JSON.parse(value);
     } catch (e) {
-      console.error('AsyncStorage getItem error:', e);
+      console.error("AsyncStorage getItem error:", e);
     }
   }
 
@@ -27,10 +25,9 @@ class StorageService {
     try {
       await AsyncStorage.removeItem(key);
     } catch (e) {
-      console.error('AsyncStorage removeItem error:', e);
+      console.error("AsyncStorage removeItem error:", e);
     }
   }
-
 }
 
 export default StorageService;

@@ -1,9 +1,9 @@
-import { WeightAndReps } from "./Category"
+import { WeightAndReps } from "./Category";
 
-type Operation = 'modify' | 'add';
+type Operation = "modify" | "add";
 
 export type Selected = {
-    index: number,
-    unit: WeightAndReps,
-    operation: Operation
-}
+  index: number;
+  unit: WeightAndReps;
+  operation: Operation;
+};
