@@ -6,7 +6,7 @@ import { WeightAndReps } from "../model/Category";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import StorageService from "../services/storage/StorageService";
 import { Selected } from "../model/Storage";
-import { RouteProp } from "@react-navigation/native";
+import { RouteProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../App";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { darkMode, globalStyle } from "../model/GlobalStyles";
@@ -20,6 +20,8 @@ import { FontAwesome6 } from "@expo/vector-icons";
 import { safeArray } from "../util/ArrayUtil";
 import SelectedSetQueries from "../services/queries/SelectedSetQueries";
 import Progress from "../components/Progress";
+import { FontAwesome5 } from "@expo/vector-icons";
+import TopBarGeneral from "../components/TopBarGeneral";
 
 type ExerciseScreenRouteProp = RouteProp<RootStackParamList, "Exercise">;
 type ExerciseScreenNavigationProp = NativeStackNavigationProp<
@@ -34,6 +36,7 @@ type ExerciseScreenProps = {
 
 export default function ExerciseScreen({ route }: ExerciseScreenProps) {
   const { date, exerciseName } = route.params;
+  const navigation = useNavigation();
   const key = date.concat("|").concat(exerciseName);
   const { data: exerciseUnit } =
     ExerciseUnitQueries.getExerciseUnitByNameAndDate(exerciseName, date);
@@ -185,7 +188,17 @@ export default function ExerciseScreen({ route }: ExerciseScreenProps) {
     };
     await selectedSetMutation.mutateAsync(neco);
   };
+  
 
+  const elements = [
+    <Pressable onPress={() => 
+    navigation.navigate("History",{
+      exerciseName: route.params.exerciseName
+    })
+    }>
+      <FontAwesome5 name="hourglass" size={24} color={darkMode.fontColor} />
+    </Pressable>,
+  ];
   return (
     <>
       <View style={styles.lottie}>
@@ -200,6 +213,10 @@ export default function ExerciseScreen({ route }: ExerciseScreenProps) {
       </View>
 
       <View style={styles.centeredView}>
+        <View style={styles.topBar}>
+          <TopBarGeneral innerElements={elements}></TopBarGeneral>
+        </View>
+        
         <View style={styles.header}>
           <Text style={styles.modalText}>{exerciseName}</Text>
         </View>
@@ -367,4 +384,7 @@ const styles = StyleSheet.create({
   progressWrapper: {
     marginTop: 15,
   },
+  topBar: {
+    width: "100%"
+  }
 });
