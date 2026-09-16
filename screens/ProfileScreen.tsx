@@ -1,12 +1,16 @@
 import React from "react";
-import { View, StyleSheet, TextInput, Text } from "react-native";
-import { darkMode } from "../model/GlobalStyles";
+import { View, StyleSheet, TextInput, Text, Pressable } from "react-native";
+import { darkMode, globalStyle } from "../model/GlobalStyles";
 import SelectDropdown from "react-native-select-dropdown";
 import ProfileQueries from "../services/queries/ProfileQueries";
 import { useQueryClient } from "@tanstack/react-query";
 import { Feather } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import TopBarGeneral from "../components/TopBarGeneral";
 
 export default function ProfileScreen() {
+  const navigation = useNavigation();
   //const [age, onChangeAge] = React.useState('');
   //const [bodyWeight, onChangeNodyWeight] = React.useState('');
   const genders = ["Male", "Female"];
@@ -38,9 +42,19 @@ export default function ProfileScreen() {
     }
   };
 
+  const backElements = [
+    <Pressable onPress={() => navigation.navigate('Home')}>
+      <AntDesign name="left" size={24} color={darkMode.fontColor} />
+    </Pressable>,
+    <Text style={styles.titleText}>Profile</Text>,
+    <View style={styles.spacer} />,
+  ];
+
   return (
-    <View style={styles.centeredView}>
+    <View style={styles.outerView}>
+      <TopBarGeneral innerElements={[backElements]}></TopBarGeneral>
       {/* <TopBarPlain></TopBarPlain> */}
+    <View style={styles.centeredView}>
       <View>
         <View style={styles.profilePhotoView}>
           <Feather name="user" size={52} color={darkMode.fontColor} />
@@ -50,7 +64,7 @@ export default function ProfileScreen() {
           data={genders}
           defaultValue={prepareGenderProp(gender)}
           buttonStyle={styles.input}
-          buttonTextStyle={styles.text}
+          buttonTextStyle={styles.dropdownText}
           onSelect={async (selectedItem) => {
             await genderMutation.mutateAsync(selectedItem);
           }}
@@ -87,14 +101,19 @@ export default function ProfileScreen() {
         />
       </View>
     </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  outerView: {
+    flex: 1,
+    backgroundColor: darkMode.background,
+  },
   centeredView: {
     paddingTop: 10,
     width: "100%",
-    height: "100%",
+    flex: 1,
     backgroundColor: darkMode.background,
     display: "flex",
     flexDirection: "column",
@@ -119,5 +138,19 @@ const styles = StyleSheet.create({
   },
   text: {
     color: darkMode.fontColor,
+  },
+  dropdownText: {
+    color: darkMode.fontColor,
+    textAlign: "left",
+    fontSize: 14,
+  },
+  titleText: {
+    color: darkMode.fontColor,
+    fontFamily: globalStyle.fontFamilyRegular,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  spacer: {
+    flex: 1,
   },
 });
