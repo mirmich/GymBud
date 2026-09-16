@@ -19,10 +19,11 @@ export default function TopBarGeneral(props: TopBarGeneralProps) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: darkMode.accentPurple,
-    paddingBottom: 5,
+    paddingTop: 15,
+    paddingBottom: 10,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "center",
     gap: 32,
     paddingLeft: 16,
     paddingRight: 16,

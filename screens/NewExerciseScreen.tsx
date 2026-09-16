@@ -1,6 +1,7 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Text, Pressable } from "react-native";
 import React from "react";
-import { darkMode } from "../model/GlobalStyles";
+import { darkMode, globalStyle } from "../model/GlobalStyles";
+import { AntDesign } from "@expo/vector-icons";
 import ExpandableList from "../components/ExpandableList";
 import { RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -33,9 +34,16 @@ export default function NewExerciseScreen({
       exerciseName: name,
     });
   };
+  const backElements = [
+    <Pressable onPress={() => navigation.navigate('Home')}>
+      <AntDesign name="left" size={24} color={darkMode.fontColor} />
+    </Pressable>,
+    <Text style={styles.titleText}>Add</Text>,
+    <View style={styles.spacer} />,
+  ];
   return (
     <View style={styles.container}>
-      <TopBarGeneral innerElements={[]}></TopBarGeneral>
+      <TopBarGeneral innerElements={[backElements]}></TopBarGeneral>
       {safeArray(data).map((category) => (
         <ExpandableList
           key={category.name}
@@ -55,5 +63,14 @@ const styles = StyleSheet.create({
     backgroundColor: darkMode.background,
     flexDirection: "column",
     justifyContent: "flex-start",
+  },
+  titleText: {
+    color: darkMode.fontColor,
+    fontFamily: globalStyle.fontFamilyRegular,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  spacer: {
+    flex: 1,
   },
 });

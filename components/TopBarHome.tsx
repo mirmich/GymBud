@@ -31,14 +31,21 @@ export default function TopBar(props: TopBarHomeProps) {
     navigation.navigate("Profile");
   };
 
+  const separator = (
+    <View style={styles.separator} />
+  );
+
   const elements = [
     <Text style={styles.text}>{formatDate(selectedDay)}</Text>,
+    separator,
     <Pressable onPress={navigateNewExercise}>
       <FontAwesome name="plus" size={24} color={darkMode.fontColor} />
     </Pressable>,
+    separator,
     <Pressable onPress={onCalendarPressed}>
       <FontAwesome5 name="calendar-alt" size={24} color={darkMode.fontColor} />
     </Pressable>,
+    separator,
     <Pressable onPress={navigateProfile}>
       <FontAwesome name="user" size={24} color={darkMode.fontColor} />
     </Pressable>,
@@ -55,5 +62,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     color: darkMode.fontColor,
+  },
+  spacer: {
+    flex: 1,
+  },
+  separator: {
+    width: 1,
+    height: 20,
+    backgroundColor: darkMode.fontColor,
+    opacity: 0.4,
   },
 });

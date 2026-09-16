@@ -15,7 +15,7 @@ import PersonalRecordQueries from "../services/queries/PersonalRecordQueries";
 import LottieView from "lottie-react-native";
 import confetti from "../assets/confetti.json";
 import { calculatePr } from "../util/PersonalRecordsUtil";
-import { SimpleLineIcons } from "@expo/vector-icons";
+import { SimpleLineIcons, AntDesign } from "@expo/vector-icons";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { safeArray } from "../util/ArrayUtil";
 import SelectedSetQueries from "../services/queries/SelectedSetQueries";
@@ -189,14 +189,26 @@ export default function ExerciseScreen({ route }: ExerciseScreenProps) {
   };
   
 
+  const separator = (
+    <View style={styles.separator} />
+  );
+
   const elements = [
+    <Pressable onPress={() => navigation.navigate('Home')}>
+      <AntDesign name="left" size={24} color={darkMode.fontColor} />
+    </Pressable>,
+    <View style={styles.spacer} />,
+    <Text style={styles.activeTabText}>Track</Text>,
+    separator,
     <Pressable onPress={() => 
     navigation.navigate("History",{
-      exerciseName: route.params.exerciseName
+      exerciseName: route.params.exerciseName,
+      date: route.params.date
     })
     }>
-      <Text style={styles.historyText}>History</Text>
+      <Text style={styles.tabText}>History</Text>
     </Pressable>,
+    <View style={styles.spacer} />,
   ];
   return (
     <>
@@ -395,10 +407,26 @@ const styles = StyleSheet.create({
   topBar: {
     width: "100%"
   },
-  historyText: {
+  activeTabText: {
     color: darkMode.fontColor,
     fontFamily: globalStyle.fontFamilyRegular,
     fontSize: 16,
     fontWeight: "bold",
-  }
+  },
+  tabText: {
+    color: darkMode.fontColor,
+    fontFamily: globalStyle.fontFamilyRegular,
+    fontSize: 16,
+    fontWeight: "bold",
+    opacity: 0.5,
+  },
+  spacer: {
+    flex: 1,
+  },
+  separator: {
+    width: 1,
+    height: 20,
+    backgroundColor: darkMode.fontColor,
+    opacity: 0.4,
+  },
 });

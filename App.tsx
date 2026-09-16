@@ -47,32 +47,37 @@ export default function App() {
                 {makeScreen({
                   name0: "Home",
                   component0: HomeScreen,
-                  title: "Home",
-                  backButton: () => undefined
+                  title: "",
+                  backButton: () => undefined,
+                  headerShown: false
                 })}
                 {makeScreen({
                   name0: "Exercise",
                   component0: ExerciseScreen,
-                  title: "Exercise",
-                  backButton: backToHome
+                  title: "",
+                  backButton: () => undefined,
+                  headerShown: false
                 })}
                 {makeScreen({
                   name0: "NewExercise",
                   component0: NewExerciseScreen,
                   title: "Add",
-                  backButton: backToHome
+                  backButton: backToHome,
+                  headerShown: false
                 })}
                 {makeScreen({
                   name0: "Profile",
                   component0: ProfileScreen,
                   title: "Profile",
-                  backButton: backToHome
+                  backButton: backToHome,
+                  headerShown: false
                 })}
                 {makeScreen({
                   name0: "History",
                   component0: HistoryScreen,
-                  title: "History",
-                  backButton: back
+                  title: "",
+                  backButton: () => undefined,
+                  headerShown: false
                 })}
               </Stack.Navigator> 
         ) : <View><Text>DB not loaded</Text></View>
@@ -93,7 +98,8 @@ export type NewExerciseRouteParams = {
 };
 
 export type HistoryRouteParams = { 
-  exerciseName: string
+  exerciseName: string,
+  date: string
 };
 
 export type RootStackParamList = {
@@ -110,7 +116,8 @@ type MakeScreenOptions = {
   name0: any,
   component0: Component,
   title: any,
-  backButton: ((navigation) => React.JSX.Element) | undefined
+  backButton: ((navigation) => React.JSX.Element) | undefined,
+  headerShown?: boolean
 }
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -134,13 +141,14 @@ const back = (navigation) => (
 );
 
 const makeScreen = (props: MakeScreenOptions) => {
-  const {name0, component0, title, backButton} = props;
+  const {name0, component0, title, backButton, headerShown} = props;
   return(
     <Stack.Screen 
         name={name0} 
         component={component0}
         options={({ navigation, route }) =>({
           title: title,
+          headerShown: headerShown !== false,
           headerStyle: {
             backgroundColor: darkMode.accentPurple,
           },
