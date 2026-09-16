@@ -89,15 +89,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
   },
-  pointer: {
-    position: "absolute",
-    top: -14,
-    left: 270,
-    zIndex: 998,
-  },
-  rating: {
-    backgroundColor: darkMode.background,
-  },
   purple: {
     width: 30,
     height: barHeight,

@@ -88,7 +88,4 @@ const styles = StyleSheet.create({
   day: {
     flexGrow: 4,
   },
-  calendarIcon: {
-    marginRight: 5,
-  },
 });

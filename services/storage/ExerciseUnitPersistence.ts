@@ -68,4 +68,15 @@ export default class ExerciseUnitPersistence {
     );
     return uniqueDates;
   }
+
+  /**
+   * Returns all sets for given exercise
+   * @param exerciseName The exercise name
+   * @returns All sets
+   */
+  static async listAllExerciseUnitsByName(exerciseName: string) {
+    return PersistenceService.database
+      .get<ExerciseUnit>(tableName)
+      .query(Q.where("exerciseName", exerciseName));
+  }
 }

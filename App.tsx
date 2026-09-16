@@ -14,6 +14,7 @@ import { AntDesign } from '@expo/vector-icons';
 import NewExerciseScreen from './screens/NewExerciseScreen';
 import PersistenceService from './services/storage/PersistenceService';
 import ProfileScreen from './screens/ProfileScreen';
+import HistoryScreen from './screens/HistoryScreen';
 
 export default function App() {
   const [queryClient] = useState(() => new QueryClient());
@@ -67,6 +68,12 @@ export default function App() {
                   title: "Profile",
                   backButton: backToHome
                 })}
+                {makeScreen({
+                  name0: "History",
+                  component0: HistoryScreen,
+                  title: "History",
+                  backButton: back
+                })}
               </Stack.Navigator> 
         ) : <View><Text>DB not loaded</Text></View>
         }
@@ -85,11 +92,16 @@ export type NewExerciseRouteParams = {
   date: string
 };
 
+export type HistoryRouteParams = { 
+  exerciseName: string
+};
+
 export type RootStackParamList = {
   Home: undefined;
   Exercise: ExerciseRouteParams;
   NewExercise: NewExerciseRouteParams;
   Profile: undefined;
+  History: HistoryRouteParams;
 };
 
 type Component = (a, b) => React.JSX.Element
@@ -111,6 +123,12 @@ declare global {
 
 const backToHome = (navigation) => (
   <Pressable onPress={() => navigation.navigate('Home')} style={{paddingLeft: 16}}>
+    <AntDesign name="left" size={24} color={darkMode.fontColor} />
+  </Pressable>
+);
+
+const back = (navigation) => (
+  <Pressable onPress={() => navigation.goBack()} style={{paddingLeft: 16}}>
     <AntDesign name="left" size={24} color={darkMode.fontColor} />
   </Pressable>
 );

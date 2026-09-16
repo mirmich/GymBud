@@ -9,11 +9,16 @@ interface FloatStepInputProps {
   step: number;
   onChangeValue: (newValue: number) => void;
   value: number;
+  decimals?: number;
 }
 
 export default function FloatStepInput(props: FloatStepInputProps) {
-  const { text, step } = props;
-  const [value, setValue] = useState(props.value.toFixed(1));
+  const { text, step, decimals = 1 } = props;
+  const [value, setValue] = useState(props.value.toFixed(decimals));
+
+  React.useEffect(() => {
+    setValue(props.value.toFixed(decimals));
+  }, [props.value, decimals]);
 
   const handleOp = (
     operatorFn: OperatorFunction,
@@ -22,7 +27,7 @@ export default function FloatStepInput(props: FloatStepInputProps) {
   ) => {
     const result = operatorFn(parseFloat(value0), step0);
     const sanitazed = result < 1 ? 1 : result;
-    handleInputChange(sanitazed.toFixed(1));
+    handleInputChange(sanitazed.toFixed(decimals));
   };
 
   const handleInputChange = (newValue: string) => {
@@ -65,13 +70,15 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   input: {
-    height: 40,
+    height: 48,
     width: 80,
     margin: 12,
     borderWidth: 2,
     padding: 10,
     color: darkMode.fontColor,
     borderColor: darkMode.border,
+    fontSize: 16,
+    textAlign: "center",
   },
   container: {
     width: "100%",
@@ -83,7 +90,7 @@ const styles = StyleSheet.create({
   text: {
     color: darkMode.fontColor,
     fontFamily: globalStyle.fontFamilyRegular,
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "bold",
   },
   label: {
@@ -97,18 +104,18 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    height: 30,
-    width: 30,
+    height: 48,
+    width: 48,
     backgroundColor: darkMode.accentRed,
-    borderRadius: 2,
+    borderRadius: 4,
   },
   addButton: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    height: 30,
-    width: 30,
+    height: 48,
+    width: 48,
     backgroundColor: darkMode.accentGreen,
-    borderRadius: 2,
+    borderRadius: 4,
   },
 });

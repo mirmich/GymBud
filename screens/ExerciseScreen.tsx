@@ -6,7 +6,7 @@ import { WeightAndReps } from "../model/Category";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import StorageService from "../services/storage/StorageService";
 import { Selected } from "../model/Storage";
-import { RouteProp } from "@react-navigation/native";
+import { RouteProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../App";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { darkMode, globalStyle } from "../model/GlobalStyles";
@@ -20,6 +20,7 @@ import { FontAwesome6 } from "@expo/vector-icons";
 import { safeArray } from "../util/ArrayUtil";
 import SelectedSetQueries from "../services/queries/SelectedSetQueries";
 import Progress from "../components/Progress";
+import TopBarGeneral from "../components/TopBarGeneral";
 
 type ExerciseScreenRouteProp = RouteProp<RootStackParamList, "Exercise">;
 type ExerciseScreenNavigationProp = NativeStackNavigationProp<
@@ -34,6 +35,7 @@ type ExerciseScreenProps = {
 
 export default function ExerciseScreen({ route }: ExerciseScreenProps) {
   const { date, exerciseName } = route.params;
+  const navigation = useNavigation();
   const key = date.concat("|").concat(exerciseName);
   const { data: exerciseUnit } =
     ExerciseUnitQueries.getExerciseUnitByNameAndDate(exerciseName, date);
@@ -185,7 +187,17 @@ export default function ExerciseScreen({ route }: ExerciseScreenProps) {
     };
     await selectedSetMutation.mutateAsync(neco);
   };
+  
 
+  const elements = [
+    <Pressable onPress={() => 
+    navigation.navigate("History",{
+      exerciseName: route.params.exerciseName
+    })
+    }>
+      <Text style={styles.historyText}>History</Text>
+    </Pressable>,
+  ];
   return (
     <>
       <View style={styles.lottie}>
@@ -200,6 +212,10 @@ export default function ExerciseScreen({ route }: ExerciseScreenProps) {
       </View>
 
       <View style={styles.centeredView}>
+        <View style={styles.topBar}>
+          <TopBarGeneral innerElements={elements}></TopBarGeneral>
+        </View>
+        
         <View style={styles.header}>
           <Text style={styles.modalText}>{exerciseName}</Text>
         </View>
@@ -245,6 +261,7 @@ export default function ExerciseScreen({ route }: ExerciseScreenProps) {
         <FloatStepInput
           text="Reps"
           step={1}
+          decimals={0}
           value={selected?.unit?.reps ?? 0.0}
           onChangeValue={handleReps}
         />
@@ -294,19 +311,27 @@ const styles = StyleSheet.create({
   },
   buttonAdd: {
     backgroundColor: darkMode.accentGreen,
-    padding: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 30,
     marginTop: 10,
     fontFamily: globalStyle.fontFamilyRegular,
     color: darkMode.fontColor,
-    borderRadius: 3,
+    borderRadius: 5,
+    minWidth: 120,
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonUpdate: {
     backgroundColor: darkMode.accentYellow,
-    padding: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 30,
     marginTop: 10,
     fontFamily: globalStyle.fontFamilyRegular,
     color: darkMode.fontColor,
-    borderRadius: 3,
+    borderRadius: 5,
+    minWidth: 120,
+    alignItems: "center",
+    justifyContent: "center",
   },
   addUpdateText: {
     color: "white",
@@ -367,4 +392,13 @@ const styles = StyleSheet.create({
   progressWrapper: {
     marginTop: 15,
   },
+  topBar: {
+    width: "100%"
+  },
+  historyText: {
+    color: darkMode.fontColor,
+    fontFamily: globalStyle.fontFamilyRegular,
+    fontSize: 16,
+    fontWeight: "bold",
+  }
 });

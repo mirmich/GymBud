@@ -3,13 +3,13 @@ import React from "react";
 import { Calendar } from "react-native-calendars";
 import ExerciseSession from "../components/ExerciseSession";
 import Header from "../components/Header";
-import TopBar from "../components/TopBar";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { darkMode } from "../model/GlobalStyles";
 import ExerciseUnitQueries from "../services/queries/ExerciseUnitQueries";
 import { safeArray } from "../util/ArrayUtil";
 import * as R from "ramda";
+import TopBarHome from "../components/TopBarHome";
 
 declare type MarkedDates = {
   [key: string]: any;
@@ -68,7 +68,8 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <TopBar selectedDay={selected} onCalendarPressed={calendarPress} />
+      {/* <TopBar selectedDay={selected} onCalendarPressed={calendarPress} /> */}
+      <TopBarHome selectedDay={selected} onCalendarPressed={calendarPress} />
       {showCalendar && (
         <Calendar
           onDayPress={(day) => {

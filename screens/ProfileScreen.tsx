@@ -107,11 +107,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   input: {
-    height: 40,
+    height: 50,
     width: 200,
     marginTop: 5,
     marginBottom: 10,
-    padding: 10,
+    paddingHorizontal: 10,
     borderWidth: 2,
     backgroundColor: darkMode.background,
     color: darkMode.fontColor,

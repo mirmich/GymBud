@@ -37,6 +37,15 @@ export default class ExerciseUnitQueries {
     });
   }
 
+  static listAllExerciseUnitsByName(exerciseName: string) {
+    return useQuery({
+      queryKey: ["exerciseUnit", "list", "all", exerciseName],
+      queryFn: async () => {
+        return ExerciseUnitPersistence.listAllExerciseUnitsByName(exerciseName);
+      },
+    });
+  }
+
   static addExerciseUnit(
     exerciseName0: string,
     date0: string,

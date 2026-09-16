@@ -5,10 +5,10 @@ import ExpandableList from "../components/ExpandableList";
 import { RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
-import TopBarPlain from "../components/TopBarPlain";
 import CategoryQueries from "../services/queries/CategoryQueries";
 import { safeArray } from "../util/ArrayUtil";
 import { Category } from "../services/storage/CategoryModel";
+import TopBarGeneral from "../components/TopBarGeneral";
 
 type NewExerciseScreenRouteProp = RouteProp<RootStackParamList, "NewExercise">;
 type NewExerciseScreenNavigationProp = NativeStackNavigationProp<
@@ -35,7 +35,7 @@ export default function NewExerciseScreen({
   };
   return (
     <View style={styles.container}>
-      <TopBarPlain></TopBarPlain>
+      <TopBarGeneral innerElements={[]}></TopBarGeneral>
       {safeArray(data).map((category) => (
         <ExpandableList
           key={category.name}
