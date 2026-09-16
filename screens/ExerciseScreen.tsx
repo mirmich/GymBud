@@ -20,7 +20,6 @@ import { FontAwesome6 } from "@expo/vector-icons";
 import { safeArray } from "../util/ArrayUtil";
 import SelectedSetQueries from "../services/queries/SelectedSetQueries";
 import Progress from "../components/Progress";
-import { FontAwesome5 } from "@expo/vector-icons";
 import TopBarGeneral from "../components/TopBarGeneral";
 
 type ExerciseScreenRouteProp = RouteProp<RootStackParamList, "Exercise">;
@@ -196,7 +195,7 @@ export default function ExerciseScreen({ route }: ExerciseScreenProps) {
       exerciseName: route.params.exerciseName
     })
     }>
-      <FontAwesome5 name="hourglass" size={24} color={darkMode.fontColor} />
+      <Text style={styles.historyText}>History</Text>
     </Pressable>,
   ];
   return (
@@ -262,6 +261,7 @@ export default function ExerciseScreen({ route }: ExerciseScreenProps) {
         <FloatStepInput
           text="Reps"
           step={1}
+          decimals={0}
           value={selected?.unit?.reps ?? 0.0}
           onChangeValue={handleReps}
         />
@@ -311,19 +311,27 @@ const styles = StyleSheet.create({
   },
   buttonAdd: {
     backgroundColor: darkMode.accentGreen,
-    padding: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 30,
     marginTop: 10,
     fontFamily: globalStyle.fontFamilyRegular,
     color: darkMode.fontColor,
-    borderRadius: 3,
+    borderRadius: 5,
+    minWidth: 120,
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonUpdate: {
     backgroundColor: darkMode.accentYellow,
-    padding: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 30,
     marginTop: 10,
     fontFamily: globalStyle.fontFamilyRegular,
     color: darkMode.fontColor,
-    borderRadius: 3,
+    borderRadius: 5,
+    minWidth: 120,
+    alignItems: "center",
+    justifyContent: "center",
   },
   addUpdateText: {
     color: "white",
@@ -386,5 +394,11 @@ const styles = StyleSheet.create({
   },
   topBar: {
     width: "100%"
+  },
+  historyText: {
+    color: darkMode.fontColor,
+    fontFamily: globalStyle.fontFamilyRegular,
+    fontSize: 16,
+    fontWeight: "bold",
   }
 });

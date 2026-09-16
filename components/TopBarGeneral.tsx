@@ -1,7 +1,6 @@
 import { View, StyleSheet } from "react-native";
 import React, { ReactNode } from "react";
 import { darkMode } from "../model/GlobalStyles";
-import { safeArray } from "../util/ArrayUtil";
 
 interface TopBarGeneralProps {
   innerElements: ReactNode[];

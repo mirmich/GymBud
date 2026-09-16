@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { StyleSheet, ScrollView, Text, View } from "react-native";
+import { StyleSheet, ScrollView, Text, View, Dimensions } from "react-native";
 import { ListItem } from "@rneui/themed";
 import React from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { globalStyle, darkMode } from "../model/GlobalStyles";
 import { WeightAndReps } from "../model/Category";
 import uuid from 'react-native-uuid';
+
+const { width } = Dimensions.get("window");
 
 type ExpGeneralListProps = {
   headerName: string;
@@ -31,12 +33,6 @@ export default function ExpGeneralList(props: ExpGeneralListProps) {
             key={props.headerName + "content"}
             style={styles.topListContentContainer}
           >
-            <ListItem.Title
-              key={props.headerName + "title"}
-              style={styles.item}
-            >
-              {props.headerName}
-            </ListItem.Title>
             {expanded ? (
               <AntDesign
                 style={styles.item}
@@ -52,6 +48,12 @@ export default function ExpGeneralList(props: ExpGeneralListProps) {
                 color={darkMode.fontColor}
               />
             )}
+            <ListItem.Title
+              key={props.headerName + "title"}
+              style={styles.item}
+            >
+              {props.headerName}
+            </ListItem.Title>
           </ListItem.Content>
         }
         isExpanded={expanded}
@@ -76,13 +78,9 @@ export default function ExpGeneralList(props: ExpGeneralListProps) {
                 key={uuid0 + "content"}
                 style={styles.rowContainer}
               >
-                <View style={styles.innerContainer}>
-                  <Text style={styles.item}>{set.weight.toLocaleString()}</Text>
-                  <Text style={styles.item}>{props.weightUnit}</Text>
-                </View>
-                <View style={styles.innerContainer}>
-                  <Text style={styles.item}>{set.reps.toLocaleString()}</Text>
-                  <Text style={styles.item}>{props.exerciseUnit}</Text>
+                <View style={styles.trophyWrapper}></View>
+                <View style={styles.textWrapper}>
+                  <Text style={styles.listTextWithTrophy}>{props.innerList[i]}</Text>
                 </View>
 
                 {props.showChildIcon && (
@@ -109,7 +107,8 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
+    gap: 10,
     paddingLeft: 10,
     paddingRight: 10,
   },
@@ -117,17 +116,19 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-end",
-    gap: 20,
+    justifyContent: "flex-start",
     paddingLeft: 10,
     paddingRight: 10,
   },
-  innerContainer: {
+  textWrapper: {
     display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
+  },
+  trophyWrapper: {
+    width: 30,
+  },
+  listTextWithTrophy: {
+    color: darkMode.fontColor,
+    marginLeft: width / 2 - 130,
   },
   item: {
     color: darkMode.fontColor,
@@ -135,13 +136,5 @@ const styles = StyleSheet.create({
     flexGrow: 0,
     flexShrink: 0,
     flexBasis: "auto",
-  },
-  bottomItem: {
-    color: darkMode.fontColor,
-    fontFamily: globalStyle.fontFamilyRegular,
-    flexGrow: 0,
-    flexShrink: 0,
-    flexBasis: "auto",
-    marginLeft: 10,
   },
 });

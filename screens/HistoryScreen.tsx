@@ -7,7 +7,7 @@ import ExpGeneralList from "../components/ExpGeneralList";
 import { WeightAndReps } from "../model/Category";
 import ConversionUtil from "../util/UnitConversionUtil";
 import { formatDate } from "../util/DateUtil";
-import { HistoryRouteParams, RootStackParamList } from "../App";
+import { RootStackParamList } from "../App";
 import { RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 

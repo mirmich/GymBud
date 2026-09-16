@@ -181,14 +181,6 @@ export default function SwipeList(props: SwipeListProps) {
 }
 
 const styles = StyleSheet.create({
-  selected: {
-    alignItems: "center",
-    backgroundColor: "#AAA",
-    borderBottomColor: darkMode.border,
-    borderBottomWidth: 1,
-    justifyContent: "center",
-    height: 50,
-  },
   container: {
     backgroundColor: darkMode.background,
     flex: 1,
