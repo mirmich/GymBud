@@ -1,4 +1,5 @@
 export function calculatePr(weight: number, reps: number) {
+  if (reps <= 0 || weight <= 0) return 0;
   if (reps < 9) {
     return bryzckiFormula(weight, reps);
   } else if (reps < 11) {

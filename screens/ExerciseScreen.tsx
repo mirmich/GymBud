@@ -15,12 +15,12 @@ import PersonalRecordQueries from "../services/queries/PersonalRecordQueries";
 import LottieView from "lottie-react-native";
 import confetti from "../assets/confetti.json";
 import { calculatePr } from "../util/PersonalRecordsUtil";
-import { SimpleLineIcons, AntDesign } from "@expo/vector-icons";
+import { SimpleLineIcons } from "@expo/vector-icons";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { safeArray } from "../util/ArrayUtil";
+import ExerciseTabBar from "../components/ExerciseTabBar";
 import SelectedSetQueries from "../services/queries/SelectedSetQueries";
 import Progress from "../components/Progress";
-import TopBarGeneral from "../components/TopBarGeneral";
 
 type ExerciseScreenRouteProp = RouteProp<RootStackParamList, "Exercise">;
 type ExerciseScreenNavigationProp = NativeStackNavigationProp<
@@ -187,38 +187,9 @@ export default function ExerciseScreen({ route }: ExerciseScreenProps) {
     };
     await selectedSetMutation.mutateAsync(neco);
   };
-  
 
-  const separator = (
-    <View style={styles.separator} />
-  );
 
-  const elements = [
-    <Pressable onPress={() => navigation.navigate('Home')}>
-      <AntDesign name="left" size={24} color={darkMode.fontColor} />
-    </Pressable>,
-    <View style={styles.spacer} />,
-    <Text style={styles.activeTabText}>Track</Text>,
-    separator,
-    <Pressable onPress={() => 
-    navigation.navigate("History",{
-      exerciseName: route.params.exerciseName,
-      date: route.params.date
-    })
-    }>
-      <Text style={styles.tabText}>History</Text>
-    </Pressable>,
-    separator,
-    <Pressable onPress={() => 
-    navigation.navigate("Chart",{
-      exerciseName: route.params.exerciseName,
-      date: route.params.date
-    })
-    }>
-      <Text style={styles.tabText}>Chart</Text>
-    </Pressable>,
-    <View style={styles.spacer} />,
-  ];
+
   return (
     <>
       <View style={styles.lottie}>
@@ -233,10 +204,12 @@ export default function ExerciseScreen({ route }: ExerciseScreenProps) {
       </View>
 
       <View style={styles.centeredView}>
-        <View style={styles.topBar}>
-          <TopBarGeneral innerElements={elements}></TopBarGeneral>
-        </View>
-        
+        <ExerciseTabBar
+          activeTab="Track"
+          exerciseName={route.params.exerciseName}
+          date={route.params.date}
+        />
+
         <View style={styles.header}>
           <Text style={styles.modalText}>{exerciseName}</Text>
         </View>
@@ -415,27 +388,5 @@ const styles = StyleSheet.create({
   },
   topBar: {
     width: "100%"
-  },
-  activeTabText: {
-    color: darkMode.fontColor,
-    fontFamily: globalStyle.fontFamilyRegular,
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  tabText: {
-    color: darkMode.fontColor,
-    fontFamily: globalStyle.fontFamilyRegular,
-    fontSize: 16,
-    fontWeight: "bold",
-    opacity: 0.5,
-  },
-  spacer: {
-    flex: 1,
-  },
-  separator: {
-    width: 1,
-    height: 20,
-    backgroundColor: darkMode.fontColor,
-    opacity: 0.4,
   },
 });

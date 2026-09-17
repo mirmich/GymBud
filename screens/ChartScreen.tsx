@@ -5,7 +5,6 @@ import { darkMode, globalStyle } from "../model/GlobalStyles";
 import ExerciseUnitQueries from "../services/queries/ExerciseUnitQueries";
 import { safeArray } from "../util/ArrayUtil";
 import { calculatePr } from "../util/PersonalRecordsUtil";
-import { formatDate } from "../util/DateUtil";
 import { RootStackParamList } from "../App";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -56,7 +55,7 @@ export default function ChartScreen({ route }: ChartScreenProps) {
   const chartLabels = filteredData.length > 0 ? filteredData.map(d => {
     return `${d.date.getMonth() + 1}/${d.date.getDate()}`;
   }) : ["N/A"];
-  
+
   const chartValues = filteredData.length > 0 ? filteredData.map(d => d.value) : [0];
 
   const separator = (
@@ -95,7 +94,7 @@ export default function ChartScreen({ route }: ChartScreenProps) {
       <View style={styles.topBar}>
         <TopBarGeneral innerElements={[elements]}></TopBarGeneral>
       </View>
-      
+
       <View style={styles.filterContainer}>
         <Pressable onPress={() => setFilter("15")} style={[styles.filterBtn, filter === "15" && styles.filterBtnActive]}>
           <Text style={[styles.filterText, filter === "15" && styles.filterTextActive]}>Last 15</Text>
