@@ -208,6 +208,15 @@ export default function ExerciseScreen({ route }: ExerciseScreenProps) {
     }>
       <Text style={styles.tabText}>History</Text>
     </Pressable>,
+    separator,
+    <Pressable onPress={() => 
+    navigation.navigate("Chart",{
+      exerciseName: route.params.exerciseName,
+      date: route.params.date
+    })
+    }>
+      <Text style={styles.tabText}>Chart</Text>
+    </Pressable>,
     <View style={styles.spacer} />,
   ];
   return (

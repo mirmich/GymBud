@@ -54,6 +54,15 @@ export default function HistoryScreen({ route }: HistoryScreenProps) {
     </Pressable>,
     separator,
     <Text style={styles.activeTabText}>History</Text>,
+    separator,
+    <Pressable onPress={() => 
+    navigation.navigate("Chart",{
+      exerciseName: route.params.exerciseName,
+      date: route.params.date
+    })
+    }>
+      <Text style={styles.tabText}>Chart</Text>
+    </Pressable>,
     <View style={styles.spacer} />,
   ];
 

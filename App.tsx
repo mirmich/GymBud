@@ -15,6 +15,7 @@ import NewExerciseScreen from './screens/NewExerciseScreen';
 import PersistenceService from './services/storage/PersistenceService';
 import ProfileScreen from './screens/ProfileScreen';
 import HistoryScreen from './screens/HistoryScreen';
+import ChartScreen from './screens/ChartScreen';
 
 export default function App() {
   const [queryClient] = useState(() => new QueryClient());
@@ -79,6 +80,13 @@ export default function App() {
                   backButton: () => undefined,
                   headerShown: false
                 })}
+                {makeScreen({
+                  name0: "Chart",
+                  component0: ChartScreen,
+                  title: "",
+                  backButton: () => undefined,
+                  headerShown: false
+                })}
               </Stack.Navigator> 
         ) : <View><Text>DB not loaded</Text></View>
         }
@@ -102,12 +110,18 @@ export type HistoryRouteParams = {
   date: string
 };
 
+export type ChartRouteParams = { 
+  exerciseName: string,
+  date: string
+};
+
 export type RootStackParamList = {
   Home: undefined;
   Exercise: ExerciseRouteParams;
   NewExercise: NewExerciseRouteParams;
   Profile: undefined;
   History: HistoryRouteParams;
+  Chart: ChartRouteParams;
 };
 
 type Component = (a, b) => React.JSX.Element
