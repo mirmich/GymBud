@@ -9,7 +9,9 @@
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "test": "jest",
+    "test:ci": "jest --ci --coverage --reporters=default --reporters=jest-junit"
   },
   "dependencies": {
     "@dotlottie/react-player": "^1.6.19",
@@ -51,10 +53,16 @@
     "@babel/plugin-proposal-decorators": "^7.24.1",
     "@babel/plugin-transform-flow-strip-types": "^7.24.1",
     "@eslint/js": "^9.1.1",
+    "@testing-library/jest-native": "^5.4.3",
+    "@testing-library/react-native": "^12.9.0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.11.17",
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.34.1",
     "globals": "^15.1.0",
+    "jest-expo": "~50.0.0",
+    "jest-junit": "^17.0.0",
+    "react-test-renderer": "^18.2.0",
     "typescript-eslint": "^7.7.1"
   },
   "private": true,

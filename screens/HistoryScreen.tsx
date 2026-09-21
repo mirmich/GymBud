@@ -33,13 +33,13 @@ export default function HistoryScreen({ route }: HistoryScreenProps) {
         exerciseName={route.params.exerciseName}
         date={route.params.date}
       />
-      {safeArray(allSets).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).map((eUnit) => {
+      {safeArray(allSets).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).map((eUnit, index) => {
         const sets: WeightAndReps[] = eUnit.weightAndReps;
         const setsString = sets.map(
           (x, i) => ConversionUtil.toPresent(x.weight, x.reps, i).text
         );
         return (
-          <View style={styles.listItem}>
+          <View key={index} style={styles.listItem}>
             <ExpGeneralList
               key={formatDate(eUnit.date)}
               headerName={formatDate(eUnit.date)}

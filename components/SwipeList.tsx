@@ -58,20 +58,18 @@ export default function SwipeList(props: SwipeListProps) {
     queryClient
   );
 
-  const softDeleteRecord = PersonalRecordQueries.softDeletePersonalRecord(
-    props.exerciseName,
-    props.date,
-    queryClient
-  );
-
   const isPR = (weight: number, reps: number, index: number) => {
-    const neco = safeArray(prs).filter((x) => x.weight === weight);
-    const maxRep = Math.max(...neco.map((x) => x.reps));
-    const setEq = (set: WeightAndReps) =>
-      set.weight === weight && set.reps === maxRep;
-    const isFirst =
-      safeArray(exerciseUnit.weightAndReps).findIndex(setEq) === index;
-    return isFirst;
+    const prsWithSameWeight = safeArray(prs).filter((x) => x.weight === weight);
+    if (prsWithSameWeight.length === 0) return false;
+    
+    const maxRepForWeight = Math.max(...prsWithSameWeight.map((x) => x.reps));
+    if (reps < maxRepForWeight) return false;
+
+    // Only show trophy on the first occurrence in this session
+    const firstIndex = safeArray(exerciseUnit?.weightAndReps).findIndex(
+      (set) => set.weight === weight && set.reps === maxRepForWeight
+    );
+    return firstIndex === index;
   };
 
   const renderItem2 = ({ item, index }) => {
@@ -141,12 +139,17 @@ export default function SwipeList(props: SwipeListProps) {
         );
         console.log(removed);
         await replaceSets.mutateAsync(newData);
-        if (removed.length > 0) {
-          await softDeleteRecord.mutateAsync({
-            weight: removed[0].weight,
-            reps: removed[0].reps,
-          });
+        
+        // Fix: Revert to "add" mode if a row is deleted
+        const key = props.date.concat("|").concat(props.exerciseName);
+        const currentSelected = queryClient.getQueryData<Selected>(["sets", "selected", key]);
+        if (currentSelected && currentSelected.operation === "modify") {
+           await selectedSetMutation.mutateAsync({
+             ...currentSelected,
+             operation: "add"
+           });
         }
+        
         setAnimationIsRunning(false);
       });
     }
