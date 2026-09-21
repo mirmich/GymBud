@@ -41,8 +41,6 @@ export default function ExerciseScreen({ route }: ExerciseScreenProps) {
     ExerciseUnitQueries.getExerciseUnitByNameAndDate(exerciseName, date);
   const { data: prs } =
     PersonalRecordQueries.listPersonalRecordsForExercises(exerciseName);
-  const [hasSyncedAfterStart, setSyncedAfterStart] = useState(false);
-  const [addHit, setAddHit] = useState(false);
   const confettiRef = useRef<LottieView>(null);
   const shiningRef = useRef<LottieView>(null);
   const { data: selected }: { data: Selected } = useQuery({
@@ -65,12 +63,6 @@ export default function ExerciseScreen({ route }: ExerciseScreenProps) {
     queryClient
   );
 
-  const addPersonalRecord = PersonalRecordQueries.addPersonalRecord(
-    exerciseName,
-    date,
-    queryClient
-  );
-
   const selectedSetMutation = SelectedSetQueries.selectedSetMutation(
     exerciseName,
     date,
@@ -85,78 +77,12 @@ export default function ExerciseScreen({ route }: ExerciseScreenProps) {
   const oneRepMax: number = Math.max(
     ...safeArray(prs).map((pr) => calculatePr(pr.weight, pr.reps))
   );
-  // Plays Confetti animation from the start
   const triggerConfetti = async () => {
     confettiRef.current?.play(0);
   };
   const triggerShining = () => {
     shiningRef.current?.play(0);
   };
-
-  const syncAfterStart = async () => {
-    if (
-      exerciseUnit &&
-      prs &&
-      exerciseUnit.weightAndReps &&
-      !hasSyncedAfterStart
-    ) {
-      const sets = exerciseUnit.weightAndReps as WeightAndReps[];
-      if (sets.length === 1 && addHit) {
-        await syncPrs(true);
-      } else {
-        await syncPrs();
-      }
-      setSyncedAfterStart(true);
-    }
-  };
-  const isPR = (weight: number, reps: number) => {
-    const neco = safeArray(prs).filter((x) => x.weight === weight);
-    const maxRep = Math.max(...neco.map((x) => x.reps));
-    const setEq = (set: WeightAndReps) =>
-      set.weight === weight && set.reps === maxRep;
-    const first = safeArray(exerciseUnit.weightAndReps).findIndex(setEq);
-    const last = safeArray(exerciseUnit.weightAndReps).findLastIndex(setEq);
-    return first === last && (reps >= maxRep || safeArray(prs).length === 0);
-  };
-
-  const syncPrs = async (fromUser: boolean = false) => {
-    if (exerciseUnit && prs && exerciseUnit.weightAndReps) {
-      const prsMap = new Map<number, number>();
-      prs.forEach((pr) => prsMap.set(pr.reps, pr.weight));
-      const session: WeightAndReps[] = exerciseUnit.weightAndReps; //.concat(selected.unit);
-      session.forEach((set) => {
-        const indices = Array.from(Array(set.reps + 1).keys()).slice(1);
-        indices.forEach((rep) => {
-          const currentPr = prsMap.get(rep);
-          if (!currentPr || currentPr < set.weight) {
-            prsMap.set(rep, set.weight);
-          }
-        });
-      });
-      await prsMap.forEach(async (weight0, reps0) => {
-        await addPersonalRecord.mutateAsync({ weight: weight0, reps: reps0 });
-        const isNew =
-          selected.unit.weight === weight0 && selected.unit.reps === reps0;
-        const occurences = exerciseUnit.weightAndReps.filter(
-          (set) =>
-            set.reps === selected.unit.reps &&
-            set.weight === selected.unit.weight
-        ).length;
-        if (
-          fromUser &&
-          isNew &&
-          occurences === 1 &&
-          isPR(selected.unit.weight, selected.unit.reps)
-        ) {
-          triggerConfetti();
-        }
-      });
-    }
-  };
-
-  useEffect(() => {
-    syncAfterStart();
-  }, [exerciseUnit, prs, hasSyncedAfterStart]);
 
   useEffect(() => {
     triggerShining();
@@ -280,9 +206,19 @@ export default function ExerciseScreen({ route }: ExerciseScreenProps) {
           <Pressable
             style={styles.buttonAdd}
             onPress={async () => {
+              const isNewAllTimePr = (weight: number, reps: number) => {
+                if (!prs) return false;
+                const relevantPrs = safeArray(prs).filter(pr => pr.reps >= reps);
+                if (relevantPrs.length === 0) return true;
+                const maxHistoricalWeight = Math.max(...relevantPrs.map(pr => pr.weight));
+                return weight > maxHistoricalWeight;
+              };
+              
+              if (isNewAllTimePr(selected.unit.weight, selected.unit.reps)) {
+                triggerConfetti();
+              }
+              
               await addExerciseUnit.mutateAsync(selected.unit);
-              setAddHit(true);
-              await syncPrs(true);
             }}
           >
             <Text style={styles.addUpdateText}>Add</Text>

@@ -3,6 +3,7 @@ import { safeArray } from "../../util/ArrayUtil";
 import { WeightAndReps } from "../../model/Category";
 import ExerciseUnitPersistence from "../storage/ExerciseUnitPersistence";
 import { ExerciseUnit } from "../storage/ExerciseUnitModel";
+import PersonalRecordPersistence from "../storage/PersonalRecordPersistence";
 
 export default class ExerciseUnitQueries {
   static getExerciseUnitByNameAndDate(exerciseName: string, date: string) {
@@ -53,11 +54,16 @@ export default class ExerciseUnitQueries {
     queryClient: QueryClient
   ) {
     return useMutation({
-      mutationFn: (set: WeightAndReps) => {
+      mutationFn: async (set: WeightAndReps) => {
         const sets = currentExerciseUnit
           ? currentExerciseUnit.weightAndReps.concat([set])
           : [set];
-        return ExerciseUnitPersistence.add(
+        await ExerciseUnitPersistence.add(
+          exerciseName0,
+          date0,
+          safeArray(sets)
+        );
+        await PersonalRecordPersistence.syncForSession(
           exerciseName0,
           date0,
           safeArray(sets)
@@ -66,6 +72,9 @@ export default class ExerciseUnitQueries {
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: ["exerciseUnit"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["personalRecords"],
         });
       },
     });
@@ -83,7 +92,12 @@ export default class ExerciseUnitQueries {
           reps: update.set.reps,
         };
         currentSets[update.index] = updatedSet;
-        return ExerciseUnitPersistence.add(
+        await ExerciseUnitPersistence.add(
+          currentExerciseUnit.exerciseName,
+          currentExerciseUnit.date,
+          currentSets
+        );
+        await PersonalRecordPersistence.syncForSession(
           currentExerciseUnit.exerciseName,
           currentExerciseUnit.date,
           currentSets
@@ -92,6 +106,9 @@ export default class ExerciseUnitQueries {
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: ["exerciseUnit"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["personalRecords"],
         });
       },
     });
@@ -102,8 +119,13 @@ export default class ExerciseUnitQueries {
     queryClient: QueryClient
   ) {
     return useMutation({
-      mutationFn: (sets: WeightAndReps[]) => {
-        return ExerciseUnitPersistence.add(
+      mutationFn: async (sets: WeightAndReps[]) => {
+        await ExerciseUnitPersistence.add(
+          currentExerciseUnit.exerciseName,
+          currentExerciseUnit.date,
+          sets
+        );
+        await PersonalRecordPersistence.syncForSession(
           currentExerciseUnit.exerciseName,
           currentExerciseUnit.date,
           sets
@@ -112,6 +134,9 @@ export default class ExerciseUnitQueries {
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: ["exerciseUnit"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["personalRecords"],
         });
       },
     });

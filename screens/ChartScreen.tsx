@@ -58,8 +58,8 @@ export default function ChartScreen({ route }: ChartScreenProps) {
 
   const chartValues = filteredData.length > 0 ? filteredData.map(d => d.value) : [0];
 
-  const separator = (
-    <View style={styles.separator} />
+  const Separator = ({ keyName }: { keyName: string }) => (
+    <View key={keyName} style={styles.separator} />
   );
 
   const elements = [
@@ -75,7 +75,7 @@ export default function ChartScreen({ route }: ChartScreenProps) {
     }>
       <Text style={styles.tabText}>Track</Text>
     </Pressable>,
-    separator,
+    <Separator keyName="sep1" />,
     <Pressable key="history" onPress={() =>
       navigation.navigate("History", {
         exerciseName: route.params.exerciseName,
@@ -84,7 +84,7 @@ export default function ChartScreen({ route }: ChartScreenProps) {
     }>
       <Text style={styles.tabText}>History</Text>
     </Pressable>,
-    separator,
+    <Separator keyName="sep2" />,
     <Text key="chart" style={styles.activeTabText}>Chart</Text>,
     <View key="s2" style={styles.spacer} />,
   ];
@@ -92,7 +92,7 @@ export default function ChartScreen({ route }: ChartScreenProps) {
   return (
     <View style={styles.centeredView}>
       <View style={styles.topBar}>
-        <TopBarGeneral innerElements={[elements]}></TopBarGeneral>
+        <TopBarGeneral innerElements={elements}></TopBarGeneral>
       </View>
 
       <View style={styles.filterContainer}>

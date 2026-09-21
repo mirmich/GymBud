@@ -14,49 +14,4 @@ export default class PersonalRecordQueries {
       },
     });
   }
-
-  static addPersonalRecord(
-    exerciseName: string,
-    date: string,
-    queryClient: QueryClient
-  ) {
-    return useMutation({
-      mutationFn: (pr: { weight: number; reps: number }) => {
-        return PersonalRecordPersistence.add(
-          exerciseName,
-          date,
-          pr.weight,
-          pr.reps
-        );
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: [this.queryPrefix],
-        });
-      },
-    });
-  }
-
-  static softDeletePersonalRecord(
-    exerciseName: string,
-    date: string,
-    queryClient: QueryClient
-  ) {
-    return useMutation({
-      mutationFn: (pr: { weight: number; reps: number }) => {
-        return PersonalRecordPersistence.softDeleteRecord(
-          exerciseName,
-          date,
-          pr.weight,
-          0,
-          pr.reps
-        );
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: [this.queryPrefix],
-        });
-      },
-    });
-  }
 }
